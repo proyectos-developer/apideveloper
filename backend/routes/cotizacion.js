@@ -11,15 +11,15 @@ const nodemailer = require('nodemailer')
 const SMTPTransport = require('nodemailer/lib/smtp-transport')
 
 var transporter = nodemailer.createTransport( new SMTPTransport ({
-    host: 'developer-ideas.com',
-    secure: true,
-    port: 465,
+    host: "in-v3.mailjet.com", // service
+    secure: false, // use SSL
+    port: 587, // port for secure SMTP
     auth: {
-        user: 'admin@developer-ideas.com',
-        pass: '206@Dev2702ideas732'
+        user: keys.mailjet.user,
+        pass: keys.mailjet.pass
     },
     tls: {
-        rejectUnauthorized: false
+      rejectUnauthorized: false // Disable certificate validation
     }
 }))
 
