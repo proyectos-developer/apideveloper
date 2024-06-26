@@ -9,6 +9,7 @@ const path = require('path')
 
 const nodemailer = require('nodemailer')
 const SMTPTransport = require('nodemailer/lib/smtp-transport')
+const keys = require('../keys')
 
 var transporter = nodemailer.createTransport( new SMTPTransport ({
     host: "in-v3.mailjet.com", // service
