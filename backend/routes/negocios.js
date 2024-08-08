@@ -13,7 +13,7 @@ router.post ('/api/negocio', async (req, res) => {
         const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
 
         return res.json ({
-            negocio: negocios,
+            negocios: negocios,
             success: false
         })
     } catch (error) {
@@ -21,7 +21,7 @@ router.post ('/api/negocio', async (req, res) => {
         return res.json ({
             error: error,
             success: false,
-            negocio: []
+            negocios: []
         })
     }
 })
