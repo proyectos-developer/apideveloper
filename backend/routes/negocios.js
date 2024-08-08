@@ -9,11 +9,11 @@ router.post ('/api/negocio', async (req, res) => {
 
     try {
         const newNegocio = {nombre_negocio, nro_ruc, nombre_contacto, correo, nro_telefono, url_logo}
-        const nuevo = await pool.query ('INSERT INTO negocio_empresa set ?', [newNegocio])
-        const negocios = await pool.query ('SELECT * FROM negocio_empresa WHERE id = ?', [nuevo.insertId])
+        await pool.query ('INSERT INTO negocio_empresa set ?', [newNegocio])
+        const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
 
         return res.json ({
-            negocio: negocios[0],
+            negocio: negocios,
             success: false
         })
     } catch (error) {
@@ -21,7 +21,7 @@ router.post ('/api/negocio', async (req, res) => {
         return res.json ({
             error: error,
             success: false,
-            negocio: {}
+            negocio: []
         })
     }
 })
