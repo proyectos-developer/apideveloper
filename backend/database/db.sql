@@ -19,6 +19,25 @@ ALTER TABLE users
 
 DESCRIBE users;
 
+/**Usuarios página**/
+CREATE TABLE negocio_empresa(
+    id INT(11) NOT NULL,
+    correo VARCHAR (100) NOT NULL,
+    nro_telefono VARCHAR (100) NOT NULL,
+    nombre_negocio VARCHAR (100) NOT NULL,
+    nro_ruc VARCHAR (100) NOT NULL,
+    nombre_contacto VARCHAR (100) NOT NULL,
+    logo VARCHAR (500) NOT NULL
+);
+
+ALTER TABLE negocio_empresa
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE negocio_empresa
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE negocio_empresa;
+
 /**Suscripción página**/
 CREATE TABLE suscripcion(
     id INT(11) NOT NULL,

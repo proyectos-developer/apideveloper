@@ -64,6 +64,7 @@ app.use(require('./backend/routes/cotizacion.js'))
 app.use(require('./backend/routes/productos.js'))
 app.use(require('./backend/routes/categorias.js'))
 app.use(require('./backend/routes/carrito.js'))
+app.use(require('./backend/routes/negocios.js'))
 
 app.use(express.static(path.resolve(__dirname, './backend/views')));
 app.get ('/api', (req, res) => {
