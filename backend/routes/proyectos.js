@@ -6,12 +6,12 @@ const { isLoggedIn } = require('../lib/auth')
 
 /**Tipo Proyecto */
 router.post ('/api/tipo_proyecto', async (req, res) => {
-    const {nombre, descripcion} = req.body
+    const {nombre, descripcion, url_tipo} = req.body
 
     try {
-        const newTipoProyecto = {nombre, descripcion}
+        const newTipoProyecto = {nombre, descripcion, url_tipo}
 
-        const nuevo_tipo = await pool.query ('INSERT INTO tipo_proyecto set ?', [newTipoProyecto])
+        await pool.query ('INSERT INTO tipo_proyecto set ?', [newTipoProyecto])
         const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
 
         return res.json ({
@@ -29,11 +29,11 @@ router.post ('/api/tipo_proyecto', async (req, res) => {
 })
 
 router.post ('/api/tipo_proyecto/:id_tipo', async (req, res) => {
-    const {nombre, descripcion} = req.body
+    const {nombre, descripcion, url_tipo} = req.body
     const {id_tipo} = req.params
 
     try {
-        const updateTipoProyecto = {nombre, descripcion}
+        const updateTipoProyecto = {nombre, descripcion, url_tipo}
 
         await pool.query ('UPDATE tipo_proyecto set ? WHERE id = ?', [updateTipoProyecto, id_tipo])
         const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
