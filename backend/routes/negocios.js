@@ -84,7 +84,7 @@ router.get ('/api/negocio/:id_negocio', async (req, res) => {
         const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE id = ?`, [id_negocio])
 
         return res.json ({
-            producto: negocios[0],
+            negocio: negocios[0],
             success: true
         })
     } catch (error) {
@@ -92,7 +92,7 @@ router.get ('/api/negocio/:id_negocio', async (req, res) => {
         return res.json ({
             error: error,
             success: false,
-            negocios: {}
+            negocio: {}
         })
     }
 })
