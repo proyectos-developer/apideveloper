@@ -14,7 +14,7 @@ router.post ('/api/negocio', async (req, res) => {
 
         return res.json ({
             negocios: negocios,
-            success: false
+            success: true
         })
     } catch (error) {
         console.log (error)
@@ -36,15 +36,15 @@ router.post ('/api/negocio/:id_negocio', async (req, res) => {
         const negocios = await pool.query ('SELECT * FROM negocio_empresa WHERE id = ?', [id_negocio])
 
         return res.json ({
-            negocio: negocios[0],
-            success: false
+            negocios: negocios,
+            success: true
         })
     } catch (error) {
         console.log (error)
         return res.json ({
             error: error,
             success: false,
-            negocio: {}
+            negocios: []
         })
     }
 })
