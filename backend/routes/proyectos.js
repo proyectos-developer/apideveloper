@@ -110,16 +110,41 @@ router.post ('/api/proyecto', async (req, res) => {
     try {
         const newProyecto = {id_tipo_proyecto, tipo_proyecto, nombre_proyecto, cliente, descripcion, url_imagen, url_contenido}
 
-        const nuevo_proyecto = await pool.query ('INSERT INTO proyectos set ?', [newProyecto])
-        const proyecto = await pool.query('SELECT * FROM proyectos WHERE id = ?', [nuevo_proyecto.insertId])
+        await pool.query ('INSERT INTO proyectos set ?', [newProyecto])
+        const proyectos = await pool.query('SELECT * FROM proyectos ORDER BY id ASC')
 
         return res.json ({
-            proyecto: proyecto [0],
+            proyectos: proyectos,
             success: true
         })
     } catch (error) {
         console.log (error)
         return res.json ({
+            proyectos: [],
+            success: false
+        })
+        
+    }
+})
+
+router.post ('/api/proyecto/:id_proyecto', async (req, res) => {
+    const {id_tipo_proyecto, tipo_proyecto, nombre_proyecto, cliente, descripcion, url_imagen, url_contenido} = req.body
+    const {id_proyecto} = req.params
+
+    try {
+        const updateProyecto = {id_tipo_proyecto, tipo_proyecto, nombre_proyecto, cliente, descripcion, url_imagen, url_contenido}
+
+        await pool.query ('UPDATE proyectos set ? WHERE id = ?', [updateProyecto, id_proyecto])
+        const proyectos = await pool.query('SELECT * FROM proyectos ORDER BY id ASC')
+
+        return res.json ({
+            proyectos: proyectos,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            proyectos: [],
             success: false
         })
         
@@ -131,7 +156,7 @@ router.get ('/api/proyectos/search/:search/tipo/:id_tipo', async (req, res) => {
 
     try {
         if (search === '0' && id_tipo === '0'){
-            const proyectos = await pool.query ('SELECT * FROM proyectos')
+            const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY id ASC')
             return res.json({
                 proyectos: proyectos,
                 success: true
@@ -150,7 +175,6 @@ router.get ('/api/proyectos/search/:search/tipo/:id_tipo', async (req, res) => {
                 success: true
             })
         }else if (search !== '0' && id_tipo !== '0'){
-            console.log ('2', search, id_tipo)
             const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (tipo_proyecto LIKE '%${search}%' OR nombre_proyecto LIKE '%${search}%' OR
                         descripcion LIKE '%${search}%') AND tipo_proyecto = ?`, [id_tipo])
             return res.json({
@@ -161,15 +185,16 @@ router.get ('/api/proyectos/search/:search/tipo/:id_tipo', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            proyectos: proyectos,
             success: false
         })
     }
 })
 
-router.get ('/api/proyecto/:id', async (req, res) => {
-    const {id} = req.params
+router.get ('/api/proyecto/:id_proyecto', async (req, res) => {
+    const {id_proyecto} = req.params
     try {
-        const proyectos = await pool.query ('SELECT * FROM proyectos WHERE id = ?', [id])
+        const proyectos = await pool.query ('SELECT * FROM proyectos WHERE id = ?', [id_proyecto])
         return res.json({
             proyecto: proyectos [0],
             success: true
@@ -177,6 +202,25 @@ router.get ('/api/proyecto/:id', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            proyecto: {},
+            success: false
+        })
+    }
+})
+
+router.get ('/api/delete/proyecto/:id_proyecto', async (req, res) => {
+    const {id_proyecto} = req.params
+    try {
+        await pool.query ('DELETE FROM proyectos WHERE id = ?', [id_proyecto])
+        const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC')
+        return res.json({
+            proyectos: proyectos,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            proyectos: [],
             success: false
         })
     }
