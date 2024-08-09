@@ -12,16 +12,16 @@ router.post ('/api/tipo_proyecto', async (req, res) => {
         const newTipoProyecto = {nombre, descripcion}
 
         const nuevo_tipo = await pool.query ('INSERT INTO tipo_proyecto set ?', [newTipoProyecto])
-        const tipo_proyecto = await pool.query('SELECT * FROM tipo_proyecto WHERE id = ?', [nuevo_tipo.insertId])
+        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
 
         return res.json ({
-            tipo_proyecto: tipo_proyecto [0],
+            tipo_proyectos: tipo_proyectos,
             success: true
         })
     } catch (error) {
         console.log (error)
         return res.json ({
-            tipo_proyecto: {},
+            tipo_proyectos: [],
             success: false
         })
         
