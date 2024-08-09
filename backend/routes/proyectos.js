@@ -21,6 +21,31 @@ router.post ('/api/tipo_proyecto', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            tipo_proyecto: {},
+            success: false
+        })
+        
+    }
+})
+
+router.post ('/api/tipo_proyecto/:id_tipo', async (req, res) => {
+    const {nombre, descripcion} = req.body
+    const {id_tipo} = req.params
+
+    try {
+        const updateTipoProyecto = {nombre, descripcion}
+
+        await pool.query ('UPDATE tipo_proyecto set ? WHERE id = ?', [updateTipoProyecto, id_tipo])
+        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+
+        return res.json ({
+            tipo_proyectos: tipo_proyectos,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            tipo_proyectos: [],
             success: false
         })
         
@@ -29,7 +54,7 @@ router.post ('/api/tipo_proyecto', async (req, res) => {
 
 router.get ('/api/tipo_proyectos', async (req, res) => {
     try {
-        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto')
+        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
         return res.json({
             tipo_proyectos: tipo_proyectos,
             success: true
@@ -37,6 +62,7 @@ router.get ('/api/tipo_proyectos', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            tipo_proyectos: [],
             success: false
         })
     }
@@ -53,6 +79,25 @@ router.get ('/api/tipo_proyecto/:id_tipo', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            tipo_proyecto: {},
+            success: false
+        })
+    }
+})
+
+router.get ('/api/delete/tipo_proyecto/:id_tipo', async (req, res) => {
+    const {id_tipo} = req.params
+    try {
+        await pool.query ('DELETE FROM tipo_proyecto WHERE id = ?', [id_tipo])
+        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+        return res.json({
+            tipo_proyectos: tipo_proyectos,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            tipo_proyecto: [],
             success: false
         })
     }
