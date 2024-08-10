@@ -220,6 +220,26 @@ router.get ('/api/proyectos/tipo_proyectos/clientes', async (req, res) => {
     }
 })
 
+router.get ('/api/tipo_proyectos/clientes', async (req, res) => {
+    try {
+        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+        const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
+
+        return res.json ({
+            tipo_proyectos: tipo_proyectos,
+            negocios: negocios,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            tipo_proyectos: [],
+            negocios: [],
+            success: false
+        })
+    }
+})
+
 router.get ('/api/proyecto/:id_proyecto', async (req, res) => {
     const {id_proyecto} = req.params
     try {
