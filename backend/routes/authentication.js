@@ -30,6 +30,27 @@ router.post('/api/signin', function(req, res, next) {
     }) (req, res, next) 
 })
 
+router.post('/api/cliente/signup', function(req, res, next){
+    passport.authenticate('cliente.signup', function (err, user, info) {
+        if (err) { return res.json({ success: false }) }
+        if (!user) { return res.json({ message: info, success: false }) }
+        if (user) { return res.json({ success: true, user: user }) }
+})(req, res, next)
+})
+
+router.post('/api/cliente/signin', function(req, res, next) {
+    passport.authenticate('cliente.signin', function (err, user, info) {
+        if (err) { return res.json({ success: false }) }
+        if (!user) { return res.json({ message: info, success: false }) }
+        if (user) {
+            return res.json({
+                success: true,
+                user: user
+            })
+        }
+    }) (req, res, next) 
+})
+
 router.get('/api/user/:usuario', async (req, res) => {
     const { usuario } = req.params
 
