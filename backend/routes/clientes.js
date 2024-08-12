@@ -36,8 +36,7 @@ const handlebarOptions = {
 
 transporter.use('compile', hbs(handlebarOptions))
 
-
-router.post ('/api/cliente/', async (req, res) => {
+router.post ('/api/cliente', async (req, res) => {
     const {nombres, apellidos, correo, nro_telefono, usuario, tipo_documento, nro_documento, razon_social, nro_ruc} = req.body
     try {
         const newCliente = {nombres, apellidos, correo, nro_telefono, usuario, tipo_documento, nro_documento, razon_social, nro_ruc}
@@ -49,25 +48,6 @@ router.post ('/api/cliente/', async (req, res) => {
             success: true
         })
     } catch (error) {
-        return res.json ({
-            error: error,
-            success: false
-        })
-    }
-})
-
-router.get ('/api/cliente/:usuario', async (req, res) => {
-    const {usuario} = req.params
-    
-    try {
-        const cliente = await pool.query ('SELECT * FROM info_clientes WHERE usuario = ?', [usuario])
-        console.log (cliente)
-        return res.json ({
-            cliente: cliente[0],
-            success: true
-        })
-    } catch (error) {
-        console.log (error)
         return res.json ({
             error: error,
             success: false
@@ -88,6 +68,76 @@ router.post ('/api/cliente/:usuario', async (req, res) => {
             success: true
         })
 
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            success: false
+        })
+    }
+})
+
+router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
+    const {search, begin, amount} = req.params
+
+    try {
+        if (search === ''){
+            const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY apellidos 
+                        LIMIT ${begin},${amount}`)
+            if(parseInt(begin) === 0){
+                const total_clientes = await pool.query ('SELECT COUNT (id) FROM info_clientes')
+
+                return res.json ({
+                    total_clientes: total_clientes[0][`COUNT (id)`],
+                    clientes: clientes,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    clientes: clientes,
+                    success: true
+                })
+            }
+        }else{
+            const clientes = await pool.query (`SELECT * FROM info_clientes WHERE nombres LIKE '%${search}%' 
+                        OR apellidos LIKE '%${search}%' OR nro_telefono LIKE '%${search}%' OR 
+                        correo LIKE '%${search}%' ORDER BY apellidos LIMIT ${begin},${amount}`)
+            if(parseInt(begin) === 0){
+                const total_clientes = await pool.query (`SELECT COUNT (id) FROM info_clientes WHERE nombres 
+                        LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_telefono LIKE 
+                        '%${search}%' OR correo LIKE '%${search}%'`)
+
+                return res.json ({
+                    total_clientes: total_clientes[0][`COUNT (id)`],
+                    clientes: clientes,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    clientes: clientes,
+                    success: true
+                })
+            }
+        }
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            success: false
+        })
+    }
+})
+
+router.get ('/api/cliente/:usuario', async (req, res) => {
+    const {usuario} = req.params
+    
+    try {
+        const cliente = await pool.query ('SELECT * FROM info_clientes WHERE usuario = ?', [usuario])
+        console.log (cliente)
+        return res.json ({
+            cliente: cliente[0],
+            success: true
+        })
     } catch (error) {
         console.log (error)
         return res.json ({
