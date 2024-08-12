@@ -81,9 +81,8 @@ router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
     const {search, begin, amount} = req.params
 
     try {
-        if (search === 0){
-            const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY apellidos 
-                        LIMIT ${begin},${amount}`)
+        if (search === '0'){
+            const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY apellidos ASC LIMIT ${begin},${amount}`)
             if(parseInt(begin) === 0){
                 const total_clientes = await pool.query ('SELECT COUNT (id) FROM info_clientes')
 
@@ -101,7 +100,7 @@ router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
         }else{
             const clientes = await pool.query (`SELECT * FROM info_clientes WHERE nombres LIKE '%${search}%' 
                         OR apellidos LIKE '%${search}%' OR nro_telefono LIKE '%${search}%' OR 
-                        correo LIKE '%${search}%' ORDER BY apellidos LIMIT ${begin},${amount}`)
+                        correo LIKE '%${search}%' ORDER BY apellidos ASC LIMIT ${begin},${amount}`)
             if(parseInt(begin) === 0){
                 const total_clientes = await pool.query (`SELECT COUNT (id) FROM info_clientes WHERE nombres 
                         LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_telefono LIKE 
