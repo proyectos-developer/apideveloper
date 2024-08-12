@@ -74,7 +74,39 @@ router.post(`/api/user/update/correo/:usuario`, async (req, res) => {
     return res.json({ user: users[0] })
 })
 
-router.post(`/api/update/password/:usuario`, async (req, res) => {
+router.post(`/api/local/update/password/:correo`, async (req, res) => {
+    const { correo } = req.params
+    const { password } = req.body
+    try {
+        const usuarios = await pool.query('SELECT * FROM users WHERE correo = ?', [correo])
+        const oldcontrasenia = usuarios[0].password
+    
+        const validate = await bcrypt.compare(password, oldcontrasenia)
+        if (validate) {
+            return res.json({ message: '0' })
+        } else {
+            const new_password = await helpers.encryptPassword(password)
+            const nuevoDato = {
+                password: new_password
+            }
+    
+            await pool.query('UPDATE users set ? WHERE correo = ?', [nuevoDato, correo])
+            const users = await pool.query('SELECT * from users WHERE correo = ?', [correo])
+            return res.json({ 
+                user: users[0],
+                success: true
+            })
+        }
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            success: false
+        })
+    }
+})
+
+router.post(`/api/cliente/update/password/:usuario`, async (req, res) => {
     const { usuario } = req.params
     const { password } = req.body
     try {
