@@ -36,7 +36,7 @@ const handlebarOptions = {
 
 transporter.use('compile', hbs(handlebarOptions))
 
-router.post('/api/correo/nuevo/password', async (req, res) => {
+router.post('/api/correo/cliente/nuevo/password', async (req, res) => {
     const { correo } = req.body
 
     const usuarios = await pool.query ('SELECT * FROM clientes JOIN info_clientes ON clientes.usuario = info_clientes.usuario WHERE clientes.correo = ?', [correo])
@@ -46,6 +46,42 @@ router.post('/api/correo/nuevo/password', async (req, res) => {
             to: correo, // list of receivers
             subject: 'Olvide mi contraseña Developer Ideas',
             template: 'olvidepassword', // the name of the template file i.e email.handlebars
+            context:{
+                usuario: usuarios[0].usuario,
+                 // replace {{name}} with Adebola
+            }
+        }
+    
+        // trigger the sending of the E-mail
+        transporter.sendMail(mailOptions, function(error, info){
+            if(error){
+                return res.json ({
+                    message: 'error: ' + error
+                })
+            }
+            
+            return res.json ({
+                usuario: usuarios[0],
+                message: info
+            })
+        });        
+    }else{
+        return res.json ({
+            message: '1'
+        })
+    }
+})
+
+router.post('/api/correo/local/nuevo/password', async (req, res) => {
+    const { correo } = req.body
+
+    const usuarios = await pool.query ('SELECT * FROM users WHERE correo = ?', [correo])
+    if (usuarios.length === 1){
+        var mailOptions = {
+            from: '"Developer Ideas" <admin@developer-ideas.com>', // sender address
+            to: correo, // list of receivers
+            subject: 'Olvide mi contraseña Developer Ideas',
+            template: 'olvidepasswordadmin', // the name of the template file i.e email.handlebars
             context:{
                 usuario: usuarios[0].usuario,
                  // replace {{name}} with Adebola
