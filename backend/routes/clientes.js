@@ -81,7 +81,7 @@ router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
     const {search, begin, amount} = req.params
 
     try {
-        if (search === ''){
+        if (search === 0){
             const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY apellidos 
                         LIMIT ${begin},${amount}`)
             if(parseInt(begin) === 0){
