@@ -7,13 +7,15 @@ const { isLoggedIn } = require('../lib/auth')
 router.post ('/api/producto', async (req, res) => {
     const {producto, descripcion, categoria, id_categoria, subcategoria, id_subcategoria, caracteristica_1, caracteristica_2, caracteristica_3, caracteristica_4, caracteristica_5, 
         caracteristica_6, caracteristica_7, caracteristica_8, caracteristica_9, caracteristica_10, caracteristica_11, caracteristica_12, caracteristica_13,
-        caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto, 
+        caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto_principal, 
+        url_foto_uno, url_foto_dos, url_foto_tres, url_foto_cuatro, url_foto_cinco,
         precio, oferta, precio_mensual, precio_anual, comentarios, sku} = req.body
 
     try {
         const newProducto = {producto, descripcion, categoria, id_categoria, subcategoria, id_subcategoria, caracteristica_1, caracteristica_2, caracteristica_3, caracteristica_4, caracteristica_5, 
             caracteristica_6, caracteristica_7, caracteristica_8, caracteristica_9, caracteristica_10, caracteristica_11, caracteristica_12, caracteristica_13,
-            caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto, 
+            caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto_principal, 
+            url_foto_uno, url_foto_dos, url_foto_tres, url_foto_cuatro, url_foto_cinco,
             precio, oferta, precio_mensual, precio_anual, comentarios, sku}
         const nuevo = await pool.query ('INSERT INTO productos set ?', [newProducto])
         const productos = await pool.query ('SELECT * FROM productos WHERE id = ?', [nuevo.insertId])
@@ -35,14 +37,16 @@ router.post ('/api/producto', async (req, res) => {
 router.post ('/api/producto/:id_producto', async (req, res) => {
     const {producto, descripcion, categoria, id_categoria, subcategoria, id_subcategoria, caracteristica_1, caracteristica_2, caracteristica_3, caracteristica_4, caracteristica_5, 
         caracteristica_6, caracteristica_7, caracteristica_8, caracteristica_9, caracteristica_10, caracteristica_11, caracteristica_12, caracteristica_13,
-        caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto, 
+        caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto_principal, 
+        url_foto_uno, url_foto_dos, url_foto_tres, url_foto_cuatro, url_foto_cinco,
         precio, oferta, precio_mensual, precio_anual, comentarios, sku} = req.body
     const {id_producto} = req.params
 
     try {
         const updateProducto = {producto, descripcion, categoria, id_categoria, subcategoria, id_subcategoria, caracteristica_1, caracteristica_2, caracteristica_3, caracteristica_4, caracteristica_5, 
             caracteristica_6, caracteristica_7, caracteristica_8, caracteristica_9, caracteristica_10, caracteristica_11, caracteristica_12, caracteristica_13,
-            caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto, 
+            caracteristica_14, caracteristica_15, caracteristica_16, caracteristica_17, caracteristica_18, caracteristica_19, caracteristica_20, servicio, url_foto_principal, 
+            url_foto_uno, url_foto_dos, url_foto_tres, url_foto_cuatro, url_foto_cinco,
             precio, oferta, precio_mensual, precio_anual, comentarios, sku}
         await pool.query ('UPDATE productos set ? WHERE id = ?', [updateProducto, id_producto])
         const productos = await pool.query ('SELECT * FROM productos WHERE id = ?', [id_producto])
@@ -66,7 +70,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
     try {
         if (minimo === '0' && search === '0' && id_categoria === '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-                        productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+                        productos.url_foto_principal, productos.url_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+                        productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
                         productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
                         productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
                         productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria ORDER BY productos.created_at LIMIT ${begin},${amount}`)
@@ -86,7 +91,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search === '0' && id_categoria === '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria ORDER BY ${order_by} ${order}  LIMIT ${begin},${amount}`)
@@ -106,7 +112,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search === '0' && id_categoria !== '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE productos.id_categoria = ? ORDER BY productos.created_at LIMIT ${begin},${amount}`, [id_categoria])
@@ -126,7 +133,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search === '0' && id_categoria !== '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE productos.id_categoria = ? ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_categoria])
@@ -146,7 +154,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search !== '0' && id_categoria === '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -172,7 +181,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search !== '0' && id_categoria === '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -198,7 +208,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search !== '0' && id_categoria !== '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -224,7 +235,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo === '0' && search !== '0' && id_categoria !== '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -250,7 +262,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search === '0' && id_categoria === '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.precio > ${minimo} AND productos.precio < ${maximo}) ORDER BY productos.created_at LIMIT ${begin},${amount}`)
@@ -270,7 +283,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search === '0' && id_categoria === '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.precio > ${minimo} AND productos.precio < ${maximo}) ORDER BY ${order_by} ${order}  LIMIT ${begin},${amount}`)
@@ -290,7 +304,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search === '0' && id_categoria !== '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE id_categoria = ? AND (precio > ${minimo} AND precio < ${maximo}) ORDER BY productos.created_at LIMIT ${begin},${amount}`, [id_categoria])
@@ -310,7 +325,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search === '0' && id_categoria !== '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE productos.id_categoria = ? AND (productos.precio > ${minimo} AND productos.precio < ${maximo})ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_categoria])
@@ -330,7 +346,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search !== '0' && id_categoria === '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -356,7 +373,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search !== '0' && id_categoria === '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -382,7 +400,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search !== '0' && id_categoria !== '0' && order_by === '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -408,7 +427,8 @@ router.get ('/api/productos/search/:search/categoria/:id_categoria/precio/:minim
             }
         }else if (minimo !== '0' && search !== '0' && id_categoria !== '0' && order_by !== '0'){
             const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-            productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+            productos.url_foto_principal, l_foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+            productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
             productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
             productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku, 
             productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE (productos.producto LIKE '%${search}%' OR productos.descripcion LIKE '%${search}%' OR productos.categoria 
@@ -448,7 +468,8 @@ router.get ('/api/producto/:id_producto', async (req, res) => {
 
     try {
         const productos = await pool.query (`SELECT productos.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, productos.producto,
-        productos.url_foto, productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
+        productos.url_foto_principal, productos.foto_uno, productos.url_foto_dos, productos.url_foto_tres, productos.url_foto_cuatro, productos.url_foto_cinco, 
+        productos.descripcion as descripcion_producto, productos.caracteristica_1, productos.caracteristica_2, productos.caracteristica_3,
         productos.caracteristica_4, productos.caracteristica_5, productos.caracteristica_6, productos.caracteristica_7, productos.caracteristica_8,
         productos.caracteristica_9, productos.caracteristica_10, productos.precio, productos.oferta, productos.servicio, productos.sku,
         productos.comentarios, productos.id FROM productos JOIN categorias ON categorias.id = productos.id_categoria WHERE productos.id = ?`, [id_producto])
