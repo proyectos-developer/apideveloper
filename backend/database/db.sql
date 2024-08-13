@@ -212,10 +212,10 @@ ALTER TABLE cotizacion
 DESCRIBE cotizacion;
 
 /**Productos**/
-CREATE TABLE producto(
+CREATE TABLE productos(
     id INT(11) NOT NULL,
     producto VARCHAR (100) NOT NULL,
-    descripcion VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
     caracteristica_1 VARCHAR (100) NOT NULL,
     caracteristica_2 VARCHAR (100) NOT NULL,
     caracteristica_3 VARCHAR (100) NOT NULL,
@@ -238,8 +238,10 @@ CREATE TABLE producto(
     caracteristica_20 VARCHAR (100) NOT NULL,
     id_categoria INT (11) NOT NULL,
     categoria VARCHAR (100) NOT NULL,
+    id_subcategoria INT (11) NOT NULL,
+    subcategoria VARCHAR (100) NOT NULL,
     servicio VARCHAR (100) NOT NULL,
-    foto TEXT NOT NULL,
+    url_foto TEXT NOT NULL,
     precio DOUBLE NOT NULL,
     oferta DOUBLE NOT NULL,
     precio_mensual DOUBLE NOT NULL,
@@ -248,13 +250,13 @@ CREATE TABLE producto(
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
-ALTER TABLE producto
+ALTER TABLE productos
     ADD PRIMARY KEY(id);
 
-ALTER TABLE producto
+ALTER TABLE productos
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
-DESCRIBE producto;
+DESCRIBE productos;
 
 /**Categorías**/
 CREATE TABLE categorias(
