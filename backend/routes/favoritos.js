@@ -26,7 +26,7 @@ router.post ('/api/favorito', async (req, res) => {
 router.get ('/api/favoritos/:begin/:amount', async (req, res) => {
     const {begin, amount} = req.params
     try {
-        const favoritos = await pool.query (`SELECT * FROM productos_favorito JOIN info_clientes ON productos_favorito.usuario_cliente = info_clientes.usuario ORDER BY created_at ASC LIMIT ${begin},${amount}`)
+        const favoritos = await pool.query (`SELECT * FROM productos_favorito JOIN info_clientes ON productos_favorito.usuario_cliente = info_clientes.usuario ORDER BY favoritos.created_at ASC LIMIT ${begin},${amount}`)
         if (parseInt(begin) === 0){
             const total_favoritos = await pool.query ('SELECT COUNT (id) FROM productos_favorito JOIN productos_favorito.usuario_cliente = info_clientes.usuario')
 
