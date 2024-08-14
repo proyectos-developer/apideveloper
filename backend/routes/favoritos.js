@@ -26,12 +26,14 @@ router.post ('/api/favorito', async (req, res) => {
 router.get ('/api/favoritos/:begin/:amount', async (req, res) => {
     const {begin, amount} = req.params
     try {
-        const favoritos = await pool.query (`SELECT * FROM productos_favorito JOIN info_clientes ON productos_favorito.usuario_cliente = info_clientes.usuario ORDER BY favoritos.created_at ASC LIMIT ${begin},${amount}`)
+        const favoritos = await pool.query (`SELECT * FROM productos_favorito JOIN info_clientes ON 
+            productos_favorito.usuario_cliente = info_clientes.usuario ORDER BY productos_favorito.created_at ASC LIMIT ${begin},${amount}`)
         if (parseInt(begin) === 0){
-            const total_favoritos = await pool.query ('SELECT COUNT (id) FROM productos_favorito JOIN productos_favorito.usuario_cliente = info_clientes.usuario')
+            const total_favoritos = await pool.query (`SELECT COUNT (productos_favorito.id) FROM productos_favorito JOIN info_clientes ON 
+                productos_favorito.usuario_cliente = info_clientes.usuario`)
 
             return res.json ({
-                total_favoritos: total_favoritos[0][`COUNT (id)`],
+                total_favoritos: total_favoritos[0][`COUNT (productos_favorito.id)`],
                 favoritos: favoritos,
                 success: true
             })
@@ -44,6 +46,7 @@ router.get ('/api/favoritos/:begin/:amount', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
+            error: error,
             favoritos: [],
             success: false
         })
