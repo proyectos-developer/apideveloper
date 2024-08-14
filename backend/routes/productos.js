@@ -22,7 +22,7 @@ router.post ('/api/producto', async (req, res) => {
 
         return res.json ({
             producto: productos[0],
-            success: false
+            success: true
         })
     } catch (error) {
         console.log (error)
@@ -53,7 +53,7 @@ router.post ('/api/producto/:id_producto', async (req, res) => {
 
         return res.json ({
             producto: productos[0],
-            success: false
+            success: true
         })
     } catch (error) {
         console.log (error)
@@ -503,7 +503,7 @@ router.get ('/api/delete/producto/:id_producto', async (req, res) => {
         return res.json ({
             error: error,
             productos: [],
-            success: true
+            success: false
         })
     }
 })
