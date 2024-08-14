@@ -258,6 +258,23 @@ ALTER TABLE productos
 
 DESCRIBE productos;
 
+/**Productos favoritos**/
+CREATE TABLE productos_favorito(
+    id INT(11) NOT NULL,
+    id_producto INT(11) NOT NULL,
+    producto VARCHAR (100) NOT NULL,
+    usuario_cliente VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp
+);
+
+ALTER TABLE productos_favorito
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE productos_favorito
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE productos_favorito;
+
 /**Categorías**/
 CREATE TABLE categorias(
     id INT(11) NOT NULL,
