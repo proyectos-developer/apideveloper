@@ -275,7 +275,7 @@ ALTER TABLE productos_favorito
 
 DESCRIBE productos_favorito;
 
-/**Productos favoritos**/
+/**Productos calificaciones**/
 CREATE TABLE productos_calificaciones(
     id INT(11) NOT NULL,
     id_producto INT(11) NOT NULL,
@@ -310,19 +310,21 @@ ALTER TABLE categorias
 DESCRIBE categorias;
 
 /**Carrito compras**/
-CREATE TABLE carrito(
+CREATE TABLE compras(
     id INT(11) NOT NULL,
     id_producto INT(11) NOT NULL,
-    producto VARCHAR (100) NOT NULL,
     usuario VARCHAR (100) NOT NULL,
+    cantidad DOUBLE NOT NULL,
+    precio_unidad DOUBLE NOT NULL,
+    precio_total DOUBLE NOT NULL,
     shop_id VARCHAR (100) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
-ALTER TABLE carrito
+ALTER TABLE compras
     ADD PRIMARY KEY(id);
 
-ALTER TABLE carrito
+ALTER TABLE compras
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
-DESCRIBE carrito;
+DESCRIBE compras;
