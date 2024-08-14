@@ -39,19 +39,19 @@ ALTER TABLE negocio_empresa
 DESCRIBE negocio_empresa;
 
 /**Suscripción página**/
-CREATE TABLE suscripcion(
+CREATE TABLE suscripciones(
     id INT(11) NOT NULL,
     correo VARCHAR (100) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
-ALTER TABLE suscripcion
+ALTER TABLE suscripciones
     ADD PRIMARY KEY(id);
 
-ALTER TABLE suscripcion
+ALTER TABLE suscripciones
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
-DESCRIBE suscripcion;
+DESCRIBE suscripciones;
 
 /**Tipo Proyecto **/
 CREATE TABLE tipo_proyecto(
