@@ -236,12 +236,7 @@ router.get ('/api/producto/:id_producto', async (req, res) => {
     const {id_producto} = req.params
 
     try {
-        const productos = await pool.query (`SELECT id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, producto,
-        url_foto_principal, foto_uno, url_foto_dos, url_foto_tres, url_foto_cuatro, url_foto_cinco, 
-        descripcion as descripcion_producto, caracteristica_1, caracteristica_2, caracteristica_3,
-        caracteristica_4, caracteristica_5, caracteristica_6, caracteristica_7, caracteristica_8,
-        caracteristica_9, caracteristica_10, precio, oferta, servicio, codigo_sku,
-        comentarios, id FROM productos JOIN categorias ON categorias.id = id_categoria WHERE id = ?`, [id_producto])
+        const productos = await pool.query (`SELECT * FROM productos WHERE id = ?`, [id_producto])
 
         return res.json ({
             producto: productos[0],
