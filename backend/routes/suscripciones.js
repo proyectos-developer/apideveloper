@@ -74,4 +74,23 @@ router.get ('/api/delete/suscripcion/:correo', async (req, res) => {
     }
 })
 
+router.get ('/api/cliente/suscriptor/:correo', async (req, res) => {
+    const {correo} = req.params
+
+    try {
+        const clientes = await pool.query ('SELECT * FROM info_clientes WHERE correo = ?', [correo])
+        return res.json ({
+            cliente: clientes[0],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            cliente: [],
+            success: false
+        })
+    }
+})
+
 module.exports = router
