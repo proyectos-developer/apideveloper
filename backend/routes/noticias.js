@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/noticia', async (req, res) => {
-    const {id_categoria_noticia, categoria_noticia, fecha, usuario, titulo, noticia, habilitar_comentarios} = req.body
+    const {id_categoria_noticia, categoria_noticia, url_foto, fecha, usuario, titulo, noticia, habilitar_comentarios} = req.body
 
     try {
-        const newNoticia = {id_categoria_noticia, categoria_noticia, fecha, usuario, titulo, noticia, habilitar_comentarios}
+        const newNoticia = {id_categoria_noticia, categoria_noticia, url_foto, fecha, usuario, titulo, noticia, habilitar_comentarios}
         await pool.query ('INSERT INTO noticias set ?', [newNoticia])
         const noticias = await pool.query ('SELECT * FROM noticias ORDER BY created_at ASC')
 
@@ -27,11 +27,11 @@ router.post ('/api/noticia', async (req, res) => {
 })
 
 router.post ('/api/noticia/:id_noticia', async (req, res) => {
-    const {id_categoria_noticia, categoria_noticia, fecha, usuario, titulo, noticia, habilitar_comentarios} = req.body
+    const {id_categoria_noticia, categoria_noticia, url_foto, fecha, usuario, titulo, noticia, habilitar_comentarios} = req.body
     const {id_noticia} = req.params
 
     try {
-        const updateNoticia = {id_categoria_noticia, categoria_noticia, fecha, usuario, titulo, noticia, habilitar_comentarios}
+        const updateNoticia = {id_categoria_noticia, categoria_noticia, url_foto, fecha, usuario, titulo, noticia, habilitar_comentarios}
         await pool.query ('UPDATE noticias set ? WHERE id = ?', [updateNoticia, id_noticia])
         const noticias = await pool.query ('SELECT * FROM noticias WHERE id = ?', [id_noticia])
 
