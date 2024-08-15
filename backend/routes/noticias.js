@@ -156,6 +156,25 @@ router.get ('/api/noticias/categoria/:id_categoria/search/:search/:begin/:amount
     }
 })
 
+router.get ('/api/noticia/:id_noticia', async (req, res) => {
+    const {id_noticia} = req.params
+
+    try {
+        const noticias = await pool.query ('SELECT * FROM noticias WHERE id = ?', [id_noticia])
+        return res.json ({
+            noticia: noticias[0],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            noticia: {},
+            success: false
+        })
+    }
+})
+
 router.get ('/api/delete/noticia/:id_noticia', async (req, res) => {
     const {id_noticia} = req.params
 
