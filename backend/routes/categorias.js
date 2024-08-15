@@ -36,7 +36,7 @@ router.post ('/api/categoria/:id_categoria', async (req, res) => {
         const categorias = await pool.query ('SELECT  * FROM categorias WHERE id = ?', [id_categoria])
 
         return res.json ({
-            categorias: categorias[0],
+            categoria: categorias[0],
             success: true
         })
     } catch (error) {
@@ -51,7 +51,7 @@ router.post ('/api/categoria/:id_categoria', async (req, res) => {
 
 router.get ('/api/categorias', async (req, res) => {
     try {
-        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC, descripcion ASC')
+        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC')
         return res.json ({
             categorias: categorias,
             success: true
@@ -101,29 +101,6 @@ router.get ('/api/delete/categoria/:id_categoria', async (req, res) => {
             error: error,
             categorias: [],
             success: true
-        })
-    }
-})
-
-router.get ('/api/productos/categoria/:id_categoria', async (req, res) => {
-    const {id_categoria} = req.params
-
-    try {
-        const productos = await pool.query (`SELECT producto.id_categoria, categorias.descripcion as descripcion_categoria, categorias.categoria, producto.producto,
-        producto.foto, producto.descripcion as descripcion_producto, producto.caracteristica_1, producto.caracteristica_2, producto.caracteristica_3,
-        producto.caracteristica_4, producto.caracteristica_5, producto.caracteristica_6, producto.caracteristica_7, producto.caracteristica_8,
-        producto.caracteristica_9, producto.caracteristica_10, producto.precio, producto.oferta, producto.servicio, producto.sku,
-        producto.comentarios, producto.id FROM producto JOIN categorias ON categorias.id = producto.id_categoria WHERE producto.id_categoria = ?`, [id_categoria])
-        return res.json({
-            productos: productos,
-            success: true
-        })
-    } catch (error) {
-        console.log (error)
-        return res.json({
-            error: error,
-            productos: [],
-            success: false
         })
     }
 })

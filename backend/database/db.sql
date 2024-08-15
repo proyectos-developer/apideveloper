@@ -297,7 +297,7 @@ DESCRIBE productos_calificaciones;
 CREATE TABLE categorias(
     id INT(11) NOT NULL,
     categoria VARCHAR (100) NOT NULL,
-    descripcion VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
@@ -308,6 +308,40 @@ ALTER TABLE categorias
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE categorias;
+
+/**Sub Categorías**/
+CREATE TABLE sub_categorias(
+    id INT(11) NOT NULL,
+    id_categoria INT (11) NOT NULL,
+    categoria VARCHAR (100) NOT NULL,
+    sub_categoria VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE sub_categorias
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE sub_categorias
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE sub_categorias;
+
+/**Servicios**/
+CREATE TABLE servicios(
+    id INT(11) NOT NULL,
+    servicio VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE servicios
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE servicios
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE servicios;
 
 /**Carrito compras**/
 CREATE TABLE compras(
@@ -328,3 +362,22 @@ ALTER TABLE compras
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE compras;
+
+/**noticias**/
+CREATE TABLE noticias(
+    id INT(11) NOT NULL,
+    categoria VARCHAR (100) NOT NULL,
+    fecha VARCHAR (100) NOT NULL,
+    usuario VARCHAR (100) NOT NULL,
+    titulo VARCHAR (200) NOT NULL,
+    noticia TEXT NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE noticias
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE noticias
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE noticias;

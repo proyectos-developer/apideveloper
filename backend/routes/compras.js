@@ -44,7 +44,7 @@ router.post ('/api/compras/:id_compra', async (req, res) => {
         return res.json ({
             error: error,
             success: false,
-            carrito_compras: []
+            compras: []
         })
     }
 })

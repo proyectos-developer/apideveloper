@@ -65,9 +65,12 @@ app.use(require('./backend/routes/productos.js'))
 app.use(require('./backend/routes/favoritos.js'))
 app.use(require('./backend/routes/calificaciones.js'))
 app.use(require('./backend/routes/categorias.js'))
+app.use(require('./backend/routes/subcategorias.js'))
+app.use(require('./backend/routes/servicios.js'))
 app.use(require('./backend/routes/compras.js'))
 app.use(require('./backend/routes/negocios.js'))
 app.use(require('./backend/routes/suscripciones.js'))
+app.use(require('./backend/routes/noticias.js'))
 
 app.use(express.static(path.resolve(__dirname, './backend/views')));
 app.get ('/api', (req, res) => {
