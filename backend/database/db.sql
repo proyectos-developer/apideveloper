@@ -444,6 +444,7 @@ CREATE TABLE trabajadores(
     fecha_inicio DATE NOT NULL,
     sueldo_bruto DOUBLE NOT NULL,
     sueldo_neto DOUBLE NOT NULL,
+    cargo VARCHAR (100) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
