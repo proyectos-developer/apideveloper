@@ -90,10 +90,10 @@ router.post ('/api/trabajador/estado_trabajo/:id_trabajador', async (req, res) =
     }
 })
 
-router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
-    const {search, id_area_empresa, order_by, order, begin, amount} = req.params
+router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:estado_trabajo/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, id_area_empresa, estado_trabajo, order_by, order, begin, amount} = req.params
     try {
-        if (search === '0' && id_area_empresa === '0' && order_by === '0'){
+        if (estado_trabajo === '0' && search === '0' && id_area_empresa === '0' && order_by === '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores ORDER BY apellidos ASC 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -109,7 +109,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search === '0' && id_area_empresa === '0' && order_by !== '0'){
+        }else if (estado_trabajo === '0' && search === '0' && id_area_empresa === '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores ORDER BY ${order_by} ${order} 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -125,7 +125,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search === '0' && id_area_empresa !== '0' && order_by === '0'){
+        }else if (estado_trabajo === '0' && search === '0' && id_area_empresa !== '0' && order_by === '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE id_area_empresa = ? 
                     ORDER BY apellidos ASC LIMIT ${begin},${amount}`, [id_area_empresa])
             if (parseInt(begin) === 0){
@@ -142,7 +142,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search === '0' && id_area_empresa !== '0' && order_by !== '0'){
+        }else if (estado_trabajo === '0' && search === '0' && id_area_empresa !== '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE id_area_empresa = ? 
                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_area_empresa])
             if (parseInt(begin) === 0){
@@ -159,7 +159,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search !== '0' && id_area_empresa === '0' && order_by === '0'){
+        }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa === '0' && order_by === '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
                      LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
@@ -181,7 +181,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search !== '0' && id_area_empresa === '0' && order_by !== '0'){
+        }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa === '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
                      LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
@@ -203,7 +203,7 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                 trabajadores: trabajadores,
                 success: true
             })
-        }else if (search !== '0' && id_area_empresa !== '0' && order_by !== '0'){
+        }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa !== '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
                      LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
@@ -214,6 +214,140 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/order_by/
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
                      LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?`, [id_area_empresa])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search === '0' && id_area_empresa === '0' && order_by === '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE estado_trabajo = ?
+                    ORDER BY apellidos ASC LIMIT ${begin},${amount}`, [estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query ('SELECT COUNT (id) FROM trabajadores WHERE estado_trabajo = ?', [estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search === '0' && id_area_empresa === '0' && order_by !== '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE estado_trabajo = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query ('SELECT COUNT (id) FROM trabajadores WHERE estado_trabajo = ?', [estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search === '0' && id_area_empresa !== '0' && order_by === '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE id_area_empresa = ? 
+                    AND estado_trabajo = ? ORDER BY apellidos ASC LIMIT ${begin},${amount}`, [id_area_empresa, estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
+                    WHERE id_area_empresa = ? AND estado_trabajo = ?`, [id_area_empresa, estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search === '0' && id_area_empresa !== '0' && order_by !== '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE id_area_empresa = ? 
+                    AND estado_trabajo = ? ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_area_empresa, estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores
+                        WHERE id_area_empresa = ? AND estado_trabajo = ?`, [id_area_empresa, estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa === '0' && order_by === '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ? ORDER BY apellidos ASC 
+                    LIMIT ${begin},${amount}`, [estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?`, [estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa === '0' && order_by !== '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?
+                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?`, [estado_trabajo])
+
+                return res.json ({
+                    total_trabajadores: total_trabajadores[0][`COUNT (id)`],
+                    trabajadores: trabajadores,
+                    success: true
+                })
+            }
+            return res.json ({
+                trabajadores: trabajadores,
+                success: true
+            })
+        }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa !== '0' && order_by !== '0'){
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?
+                     AND estado_trabajo = ?
+                      ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_area_empresa, estado_trabajo])
+            if (parseInt(begin) === 0){
+                const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
+                    WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
+                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?
+                     AND estado_trabajo = ?`, [id_area_empresa, estado_trabajo])
 
                 return res.json ({
                     total_trabajadores: total_trabajadores[0][`COUNT (id)`],
