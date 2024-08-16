@@ -92,7 +92,7 @@ router.get ('/api/delete/categoria/:id_categoria', async (req, res) => {
         await pool.query ('DELETE FROM categorias WHERE id = ?', [id_categoria])
         const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC, descripcion DESC')
         return res.json ({
-            categoria: categorias,
+            categorias: categorias,
             success: true
         })
     } catch (error) {

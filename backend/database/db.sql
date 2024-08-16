@@ -327,6 +327,22 @@ ALTER TABLE sub_categorias
 
 DESCRIBE sub_categorias;
 
+/**Unidades**/
+CREATE TABLE unidades(
+    id INT(11) NOT NULL,
+    unidad VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE unidades
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE unidades
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE unidades;
+
 /**Servicios**/
 CREATE TABLE servicios(
     id INT(11) NOT NULL,
