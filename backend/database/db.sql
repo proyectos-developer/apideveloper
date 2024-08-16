@@ -397,3 +397,74 @@ ALTER TABLE noticias
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE noticias;
+
+/**Areas empresa**/
+CREATE TABLE areas_empresa(
+    id INT(11) NOT NULL,
+    nombre_area VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE areas_empresa
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE areas_empresa
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE areas_empresa;
+
+/**Trabajador**/
+CREATE TABLE trabajadores(
+    id INT(11) NOT NULL,
+    url_foto VARCHAR (500) NOT NULL,
+    id_area_empresa INT (11) NOT NULL,
+    area_empresa VARCHAR (100) NOT NULL,
+    nombres VARCHAR (100) NOT NULL,
+    apellidos VARCHAR (100) NOT NULL,
+    correo_personal VARCHAR (100) NOT NULL,
+    correo_empresa VARCHAR (100) NOT NULL,
+    nro_telefono VARCHAR (100) NOT NULL,
+    tipo_documento VARCHAR (100) NOT NULL,
+    nro_documento VARCHAR (100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    pais VARCHAR (100) NOT NULL,
+    provincia VARCHAR (100) NOT NULL,
+    distrito VARCHAR (100) NOT NULL,
+    direccion VARCHAR (100) NOT NULL,
+    afp VARCHAR (100) NOT NULL,
+    seguro VARCHAR (100) NOT NULL,
+    estudios VARCHAR (100) NOT NULL,
+    universidad VARCHAR (100) NOT NULL,
+    titulo VARCHAR (100) NOT NULL,
+    colegio VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE trabajadores
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE trabajadores
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE trabajadores;
+
+/**Administradores**/
+CREATE TABLE administradores(
+    id INT(11) NOT NULL,
+    url_foto VARCHAR (500) NOT NULL,
+    id_trabajador INT (11) NOT NULL,
+    nombres VARCHAR (100) NOT NULL,
+    apellidos VARCHAR (100) NOT NULL,
+    area_empresa VARCHAR (100) NOT NULL,
+    habilitado TINYINT (1) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE administradores
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE administradores
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE administradores;

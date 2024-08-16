@@ -72,6 +72,9 @@ app.use(require('./backend/routes/compras.js'))
 app.use(require('./backend/routes/negocios.js'))
 app.use(require('./backend/routes/suscripciones.js'))
 app.use(require('./backend/routes/noticias.js'))
+app.use(require('./backend/routes/empresa.js'))
+app.use(require('./backend/routes/trabajadores.js'))
+app.use(require('./backend/routes/administradores.js'))
 
 app.use(express.static(path.resolve(__dirname, './backend/views')));
 app.get ('/api', (req, res) => {
