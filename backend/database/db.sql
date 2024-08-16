@@ -438,6 +438,12 @@ CREATE TABLE trabajadores(
     universidad VARCHAR (100) NOT NULL,
     titulo VARCHAR (100) NOT NULL,
     colegio VARCHAR (100) NOT NULL,
+    estado_civil VARCHAR (100) NOT NULL,
+    hijos INT (11) NOT NULL,
+    estado_trabajo VARCHAR (100) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    sueldo_bruto DOUBLE NOT NULL,
+    sueldo_neto DOUBLE NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 

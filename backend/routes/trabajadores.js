@@ -8,14 +8,14 @@ router.post ('/api/trabajador', async (req, res) => {
     const {id_area_empresa, area_empresa, url_foto, nombres, apellidos, correo_personal, correo_empresa,
             nro_telefono, tipo_documento, nro_documento, fecha_nacimiento, pais, provincia, distrito,
             direccion, afp, seguro, banco, nro_cuenta_bancaria, nro_cuenta_interbancaria, estudios,
-            universidad, colegio, titulo
+            universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto
     } = req.body
 
     try {
         const newTrabajador = {id_area_empresa, area_empresa, url_foto, nombres, apellidos, correo_personal, correo_empresa,
                 nro_telefono, tipo_documento, nro_documento, fecha_nacimiento, pais, provincia, distrito,
                 direccion, afp, seguro, banco, nro_cuenta_bancaria, nro_cuenta_interbancaria, estudios,
-                universidad, colegio, titulo
+                universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto
         }
         const nueva = await pool.query ('INSERT INTO trabajadores set ?', newTrabajador)
         const trabajador = await pool.query ('SELECT * FROM trabajadores WHERE id = ?', [nueva.insertId])
@@ -38,7 +38,7 @@ router.post ('/api/trabajador/:id_trabajador', async (req, res) => {
     const {id_area_empresa, area_empresa, url_foto, nombres, apellidos, correo_personal, correo_empresa,
             nro_telefono, tipo_documento, nro_documento, fecha_nacimiento, pais, provincia, distrito,
             direccion, afp, seguro, banco, nro_cuenta_bancaria, nro_cuenta_interbancaria, estudios,
-            universidad, colegio, titulo
+            universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto
     } = req.body
     const {id_trabajador} = req.params
 
@@ -46,7 +46,32 @@ router.post ('/api/trabajador/:id_trabajador', async (req, res) => {
         const updateTrabajador = {id_area_empresa, area_empresa, url_foto, nombres, apellidos, correo_personal, correo_empresa,
                 nro_telefono, tipo_documento, nro_documento, fecha_nacimiento, pais, provincia, distrito,
                 direccion, afp, seguro, banco, nro_cuenta_bancaria, nro_cuenta_interbancaria, estudios,
-                universidad, colegio, titulo
+                universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto
+        }
+        await pool.query ('UPDATE trabajadores set ? WHERE id = ?', [updateTrabajador, id_trabajador])
+        const trabajador = await pool.query ('SELECT  * FROM trabajadores WHERE id = ?', [id_trabajador])
+
+        return res.json ({
+            trabajador: trabajador[0],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            success: false,
+            trabajador: {}
+        })
+    }
+})
+
+router.post ('/api/trabajador/estado_trabajo/:id_trabajador', async (req, res) => {
+    const {estado_trabajo
+    } = req.body
+    const {id_trabajador} = req.params
+
+    try {
+        const updateTrabajador = {estado_trabajo
         }
         await pool.query ('UPDATE trabajadores set ? WHERE id = ?', [updateTrabajador, id_trabajador])
         const trabajador = await pool.query ('SELECT  * FROM trabajadores WHERE id = ?', [id_trabajador])
