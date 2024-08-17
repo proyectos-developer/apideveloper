@@ -103,7 +103,10 @@ router.get ('/api/delete/negocio/:id_negocio', async (req, res) => {
     try {
         await pool.query ('DELETE FROM negocio_empresa WHERE id = ?', [id_negocio])
         const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
+        const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
+
         return res.json ({
+            total_negocios: total_negocios[0][`COUNT (id)`],
             negocios: negocios,
             success: true
         })
