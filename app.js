@@ -57,6 +57,7 @@ app.use((req, res, next) => {
 app.use(require('./backend/routes/index.js'));
 app.use(require('./backend/routes/authentication.js'))
 
+app.use(require('./backend/routes/negocios.js'))
 app.use(require('./backend/routes/proyectos.js'))
 app.use(require('./backend/routes/correo.js'))
 app.use(require('./backend/routes/clientes.js'))
@@ -69,7 +70,6 @@ app.use(require('./backend/routes/subcategorias.js'))
 app.use(require('./backend/routes/unidades.js'))
 app.use(require('./backend/routes/servicios.js'))
 app.use(require('./backend/routes/compras.js'))
-app.use(require('./backend/routes/negocios.js'))
 app.use(require('./backend/routes/suscripciones.js'))
 app.use(require('./backend/routes/noticias.js'))
 app.use(require('./backend/routes/empresa.js'))

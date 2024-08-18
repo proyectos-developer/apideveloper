@@ -52,17 +52,82 @@ router.post ('/api/tipo_proyecto/:id_tipo', async (req, res) => {
     }
 })
 
-router.get ('/api/tipo_proyectos', async (req, res) => {
+router.get ('/api/tipo_proyectos/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, order_by, order, begin, amount} = req.params
     try {
-        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
-        return res.json({
-            tipo_proyectos: tipo_proyectos,
-            success: true
-        })
+        if (search === '0' && order_by === '0'){
+            const tipos_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY created_at ASC')
+            if (parseInt(begin) === 0){
+                const total_tipos_proyecto = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
+    
+                return res.json ({
+                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }
+        }else if (search === '0' && order_by !== '0'){
+            const tipos_proyectos = await pool.query (`SELECT * FROM tipo_proyecto ORDER BY ${order_by} ${order}`)
+            if (parseInt(begin) === 0){
+                const total_tipos_proyecto = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
+    
+                return res.json ({
+                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }
+        }else if (search !== '0' && order_by === '0'){
+            const tipos_proyectos = await pool.query (`SELECT * FROM tipo_proyecto WHERE (
+                nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY created_at ASC`)
+            if (parseInt(begin) === 0){
+                const total_tipos_proyecto = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
+                    nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+    
+                return res.json ({
+                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }
+        }else if (search !== '0' && order_by !== '0'){
+            const tipos_proyectos = await pool.query (`SELECT * FROM tipo_proyecto WHERE (
+                nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order}`)
+            if (parseInt(begin) === 0){
+                const total_tipos_proyecto = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
+                    nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+    
+                return res.json ({
+                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    tipos_proyectos: tipos_proyectos,
+                    success: true
+                })
+            }
+        }
     } catch (error) {
         console.log (error)
         return res.json ({
-            tipo_proyectos: [],
+            tipos_proyectos: [],
             success: false
         })
     }
@@ -89,15 +154,15 @@ router.get ('/api/delete/tipo_proyecto/:id_tipo', async (req, res) => {
     const {id_tipo} = req.params
     try {
         await pool.query ('DELETE FROM tipo_proyecto WHERE id = ?', [id_tipo])
-        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+        const tipos_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
         return res.json({
-            tipo_proyectos: tipo_proyectos,
+            tipos_proyectos: tipos_proyectos,
             success: true
         })
     } catch (error) {
         console.log (error)
         return res.json ({
-            tipo_proyecto: [],
+            tipos_proyecto: [],
             success: false
         })
     }
