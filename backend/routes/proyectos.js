@@ -59,10 +59,10 @@ router.get ('/api/tipo_proyectos/search/:search/order_by/:order_by/:order/:begin
             const tipos_proyectos = await pool.query (`SELECT * FROM tipo_proyecto ORDER BY created_at ASC
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_tipos_proyecto = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
+                const total_tipos_proyectos = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
     
                 return res.json ({
-                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    total_tipos_proyectos: total_tipos_proyectos[0][`COUNT (id)`],
                     tipos_proyectos: tipos_proyectos,
                     success: true
                 })
@@ -76,10 +76,10 @@ router.get ('/api/tipo_proyectos/search/:search/order_by/:order_by/:order/:begin
             const tipos_proyectos = await pool.query (`SELECT * FROM tipo_proyecto ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_tipos_proyecto = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
+                const total_tipos_proyectos = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
     
                 return res.json ({
-                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    total_tipos_proyectos: total_tipos_proyectos[0][`COUNT (id)`],
                     tipos_proyectos: tipos_proyectos,
                     success: true
                 })
@@ -94,11 +94,11 @@ router.get ('/api/tipo_proyectos/search/:search/order_by/:order_by/:order/:begin
                 nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY created_at ASC 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_tipos_proyecto = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
+                const total_tipos_proyectos = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
                     nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
     
                 return res.json ({
-                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    total_tipos_proyectos: total_tipos_proyectos[0][`COUNT (id)`],
                     tipos_proyectos: tipos_proyectos,
                     success: true
                 })
@@ -113,11 +113,11 @@ router.get ('/api/tipo_proyectos/search/:search/order_by/:order_by/:order/:begin
                 nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_tipos_proyecto = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
+                const total_tipos_proyectos = await pool.query (`SELECT COUNT (id) FROM tipo_proyecto WHERE (
                     nombre LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
     
                 return res.json ({
-                    total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+                    total_tipos_proyectos: total_tipos_proyectos[0][`COUNT (id)`],
                     tipos_proyectos: tipos_proyectos,
                     success: true
                 })
@@ -159,10 +159,10 @@ router.get ('/api/delete/tipo_proyecto/:id_tipo', async (req, res) => {
     try {
         await pool.query ('DELETE FROM tipo_proyecto WHERE id = ?', [id_tipo])
         const tipos_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC LIMIT 0,16')
-        const total_tipos_proyecto = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
+        const total_tipos_proyectos = await pool.query ('SELECT COUNT (id) FROM tipo_proyecto')
 
         return res.json ({
-            total_tipos_proyecto: total_tipos_proyecto[0][`COUNT (id)`],
+            total_tipos_proyectos: total_tipos_proyectos[0][`COUNT (id)`],
             tipos_proyectos: tipos_proyectos,
             success: true
         })
