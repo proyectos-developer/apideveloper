@@ -52,7 +52,7 @@ router.post ('/api/negocio/:id_negocio', async (req, res) => {
 router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, order_by, order, begin, amount} = req.params
     try {
-        if (search === '' && order_by === ''){
+        if (search === '0' && order_by === '0'){
             const negocios = await pool.query (`SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
@@ -68,7 +68,7 @@ router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amou
                     success: true
                 })
             }
-        }else if (search === '' && order_by !== ''){
+        }else if (search === '0' && order_by !== '0'){
             const negocios = await pool.query (`SELECT * FROM negocio_empresa ORDER BY ${order_by} ${order} 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -85,7 +85,7 @@ router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amou
                     success: true
                 })
             }
-        }else if (search !== '' && order_by === ''){
+        }else if (search !== '0' && order_by === '0'){
             const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE (nombre_negocio LIKE 
                     '%${search}%' OR nombre_contacto LIKE '%${search}%') ORDER BY nombre_negocio ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -102,7 +102,7 @@ router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amou
                     success: true
                 })
             }
-        }else if (search !== '' && order_by === ''){
+        }else if (search !== '0' && order_by === '0'){
             const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE (nombre_negocio LIKE 
                     '%${search}%' OR nombre_contacto LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
