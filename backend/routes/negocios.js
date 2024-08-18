@@ -102,7 +102,7 @@ router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amou
                     success: true
                 })
             }
-        }else if (search !== '0' && order_by === '0'){
+        }else if (search !== '0' && order_by !== '0'){
             const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE (nombre_negocio LIKE 
                     '%${search}%' OR nombre_contacto LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
