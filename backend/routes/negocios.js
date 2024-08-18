@@ -49,23 +49,76 @@ router.post ('/api/negocio/:id_negocio', async (req, res) => {
     }
 })
 
-router.get ('/api/negocios/:begin/:amount', async (req, res) => {
-    const {begin, amount} = req.params
+router.get ('/api/negocios/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, order_by, order, begin, amount} = req.params
     try {
-        const negocios = await pool.query (`SELECT * FROM negocio_empresa LIMIT ${begin},${amount}`)
-        if (parseInt(begin) === 0){
-            const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa ORDER BY nombre_negocio ASC')
-
-            return res.json ({
-                total_negocios: total_negocios[0][`COUNT (id)`],
-                negocios: negocios,
-                success: true
-            })
-        }else{
-            return res.json ({
-                negocios: negocios,
-                success: true
-            })
+        if (search === '' && order_by === ''){
+            const negocios = await pool.query (`SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
+    
+                return res.json ({
+                    total_negocios: total_negocios[0][`COUNT (id)`],
+                    negocios: negocios,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    negocios: negocios,
+                    success: true
+                })
+            }
+        }else if (search === '' && order_by !== ''){
+            const negocios = await pool.query (`SELECT * FROM negocio_empresa ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
+    
+                return res.json ({
+                    total_negocios: total_negocios[0][`COUNT (id)`],
+                    negocios: negocios,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    negocios: negocios,
+                    success: true
+                })
+            }
+        }else if (search !== '' && order_by === ''){
+            const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE (nombre_negocio LIKE 
+                    '%${search}%' OR nombre_contacto LIKE '%${search}%') ORDER BY nombre_negocio ASC LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
+    
+                return res.json ({
+                    total_negocios: total_negocios[0][`COUNT (id)`],
+                    negocios: negocios,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    negocios: negocios,
+                    success: true
+                })
+            }
+        }else if (search !== '' && order_by === ''){
+            const negocios = await pool.query (`SELECT * FROM negocio_empresa WHERE (nombre_negocio LIKE 
+                    '%${search}%' OR nombre_contacto LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_negocios = await pool.query ('SELECT COUNT (id) FROM negocio_empresa')
+    
+                return res.json ({
+                    total_negocios: total_negocios[0][`COUNT (id)`],
+                    negocios: negocios,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    negocios: negocios,
+                    success: true
+                })
+            }
         }
     } catch (error) {
         console.log (error)
