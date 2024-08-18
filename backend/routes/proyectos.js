@@ -10,12 +10,11 @@ router.post ('/api/tipo_proyecto', async (req, res) => {
 
     try {
         const newTipoProyecto = {nombre, descripcion, url_tipo}
-
-        await pool.query ('INSERT INTO tipo_proyecto set ?', [newTipoProyecto])
-        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+        const new_tipo_proyecto = await pool.query ('INSERT INTO tipo_proyecto set ?', [newTipoProyecto])        
+        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto WHERE id = ?', [new_tipo_proyecto.insertId])
 
         return res.json ({
-            tipo_proyectos: tipo_proyectos,
+            tipo_proyecto: tipo_proyectos[0],
             success: true
         })
     } catch (error) {
@@ -36,10 +35,10 @@ router.post ('/api/tipo_proyecto/:id_tipo', async (req, res) => {
         const updateTipoProyecto = {nombre, descripcion, url_tipo}
 
         await pool.query ('UPDATE tipo_proyecto set ? WHERE id = ?', [updateTipoProyecto, id_tipo])
-        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
+        const tipo_proyectos = await pool.query('SELECT * FROM tipo_proyecto WHERE id = ?', [id_tipo])
 
         return res.json ({
-            tipo_proyectos: tipo_proyectos,
+            tipo_proyecto: tipo_proyectos[0],
             success: true
         })
     } catch (error) {
