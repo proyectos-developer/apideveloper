@@ -508,4 +508,27 @@ router.get ('/api/delete/producto/:id_producto', async (req, res) => {
     }
 })
 
+router.get ('/api/producto/categorias/unidades/servicios', async (req, res) => {
+    try {
+        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC')
+        const sub_categorias = await pool.query ('SELECT * FROM sub_categorias ORDER BY sub_categoria ASC')
+        const unidades = await pool.query ('SELECT * FROM unidades ORDER BY unidad ASC')
+        return res.json ({
+            categorias: categorias,
+            sub_categoria: sub_categorias,
+            unidades: unidades,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            categorias: [],
+            sub_categoria: [],
+            unidades: [],
+            success: false
+        })
+    }
+})
+
 module.exports = router
