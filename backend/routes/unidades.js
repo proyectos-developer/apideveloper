@@ -49,13 +49,80 @@ router.post ('/api/unidad/:id_unidad', async (req, res) => {
     }
 })
 
-router.get ('/api/unidades', async (req, res) => {
+router.get ('/api/unidades/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {order_by, order, search, begin, amount} = req.params
     try {
-        const unidades = await pool.query ('SELECT * FROM unidades ORDER BY unidad ASC')
-        return res.json ({
-            unidades: unidades,
-            success: true
-        })
+        if (order_by === '0' && search === '0'){
+            const unidades = await pool.query (`SELECT * FROM unidades ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_unidades = await pool.query ('SELECT COUNT (id) FROM unidades')
+
+                return res.json ({
+                    total_unidades: total_unidades[0][`COUNT (id)`],
+                    unidades: unidades,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    unidades: unidades,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0'){
+            const unidades = await pool.query (`SELECT * FROM unidades WHERE (unidad LIKE '%${search}%' OR
+                descripcion LIKE '%${search}%') ORDER BY created_at ASC LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_unidades = await pool.query (`SELECT COUNT (id) FROM unidades WHERE
+                    (unidad LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_unidades: total_unidades[0][`COUNT (id)`],
+                    unidades: unidades,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    unidades: unidades,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && search === '0'){
+            const unidades = await pool.query (`SELECT * FROM unidades ODER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_unidades = await pool.query (`SELECT COUNT (id) FROM unidades`)
+
+                return res.json ({
+                    total_unidades: total_unidades[0][`COUNT (id)`],
+                    unidades: unidades,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    unidades: unidades,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0'){
+            const unidades = await pool.query (`SELECT * FROM unidades WHERE (unidad LIKE '%${search}%' OR
+                descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_unidades = await pool.query (`SELECT COUNT (id) FROM unidades WHERE
+                    (unidad LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_unidades: total_unidades[0][`COUNT (id)`],
+                    unidades: unidades,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    unidades: unidades,
+                    success: true
+                })
+            }
+        }
     } catch (error) {
         console.log (error)
         return res.json ({
@@ -90,8 +157,11 @@ router.get ('/api/delete/unidad/:id_unidad', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM unidades WHERE id = ?', [id_unidad])
-        const unidades = await pool.query ('SELECT * FROM unidades ORDER BY unidad ASC')
+        const unidades = await pool.query ('SELECT * FROM unidades ORDER BY unidad ASC LIMIT 0,16')
+        const total_unidades = await pool.query ('SELECT COUNT (id) FROM unidades')
+
         return res.json ({
+            total_unidades: total_unidades,
             unidades: unidades,
             success: true
         })

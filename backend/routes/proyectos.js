@@ -435,7 +435,10 @@ router.get ('/api/delete/proyecto/:id_proyecto', async (req, res) => {
     try {
         await pool.query ('DELETE FROM proyectos WHERE id = ?', [id_proyecto])
         const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC LIMIT 0,16')
+        const total_proyectos = await pool.query ('SELECT COUNT (id) FROM proyectos')
+
         return res.json({
+            total_proyectos: total_proyectos,
             proyectos: proyectos,
             success: true
         })

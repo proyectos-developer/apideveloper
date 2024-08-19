@@ -9,8 +9,8 @@ router.post ('/api/categoria', async (req, res) => {
 
     try {
         const newCategoria = {categoria, descripcion}
-        const nueva = await pool.query ('INSERT INTO categorias set ?', newCategoria)
-        const categorias = await pool.query ('SELECT * FROM categorias WHERE id = ?', [nueva.insertId])
+        const new_categoria = await pool.query ('INSERT INTO categorias set ?', newCategoria)
+        const categorias = await pool.query ('SELECT * FROM categorias WHERE id = ?', [new_categoria.insertId])
 
         return res.json ({
             categoria: categorias[0],
@@ -49,13 +49,80 @@ router.post ('/api/categoria/:id_categoria', async (req, res) => {
     }
 })
 
-router.get ('/api/categorias', async (req, res) => {
+router.get ('/api/categorias/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {order_by, order, search, begin, amount} = req.params
     try {
-        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC')
-        return res.json ({
-            categorias: categorias,
-            success: true
-        })
+        if (order_by === '0' && search === '0'){
+            const categorias = await pool.query (`SELECT * FROM categorias ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_categorias = await pool.query ('SELECT COUNT (id) FROM categorias')
+
+                return res.json ({
+                    total_categorias: total_categorias[0][`COUNT (id)`],
+                    categorias: categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    categorias: categorias,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0'){
+            const categorias = await pool.query (`SELECT * FROM categorias WHERE (categoria LIKE '%${search}%' OR
+                descripcion LIKE '%${search}%') ORDER BY created_at ASC LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_categorias = await pool.query (`SELECT COUNT (id) FROM categorias WHERE
+                    (categoria LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_categorias: total_categorias[0][`COUNT (id)`],
+                    categorias: categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    categorias: categorias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && search === '0'){
+            const categorias = await pool.query (`SELECT * FROM categorias ODER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_categorias = await pool.query (`SELECT COUNT (id) FROM categorias`)
+
+                return res.json ({
+                    total_categorias: total_categorias[0][`COUNT (id)`],
+                    categorias: categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    categorias: categorias,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0'){
+            const categorias = await pool.query (`SELECT * FROM categorias WHERE (categoria LIKE '%${search}%' OR
+                descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_categorias = await pool.query (`SELECT COUNT (id) FROM categorias WHERE
+                    (categoria LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_categorias: total_categorias[0][`COUNT (id)`],
+                    categorias: categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    categorias: categorias,
+                    success: true
+                })
+            }
+        }
     } catch (error) {
         console.log (error)
         return res.json ({
@@ -90,8 +157,10 @@ router.get ('/api/delete/categoria/:id_categoria', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM categorias WHERE id = ?', [id_categoria])
-        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC, descripcion DESC')
+        const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC LIMIT 0,16')
+        const total_categorias = await pool.query ('SELECT COUNT (id) FROM categorias')
         return res.json ({
+            total_categorias: total_categorias,
             categorias: categorias,
             success: true
         })

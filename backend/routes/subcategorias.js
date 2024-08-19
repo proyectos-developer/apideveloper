@@ -49,13 +49,166 @@ router.post ('/api/subcategoria/:id_subcategoria', async (req, res) => {
     }
 })
 
-router.get ('/api/subcategorias', async (req, res) => {
+router.get ('/api/subcategorias/search/:search/categoria/:id_categoria/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, id_categoria, order_by, order, begin, amount} = req.params
     try {
-        const sub_categorias = await pool.query ('SELECT * FROM sub_categorias ORDER BY sub_categoria ASC')
-        return res.json ({
-            sub_categorias: sub_categorias,
-            success: true
-        })
+        if (id_categoria === '0' && order_by === '0' && search === '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query ('SELECT COUNT (id) FROM sub_categorias')
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria === '0' && order_by === '0' && search !== '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias WHERE 
+                    (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                    WHERE (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria === '0' && order_by !== '0' && search === '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias ORDER BY ${order_by} ${order}
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query ('SELECT COUNT (id) FROM sub_categorias')
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria === '0' && order_by !== '0' && search !== '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias WHERE 
+                    (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') ORDER BY ${order_by} ${order}
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                    WHERE (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }
+        else if (id_categoria !== '0' && order_by === '0' && search === '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias 
+                    WHERE id_categoria = ? ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                        WHERE id_categoria = ?`, [id_categoria])
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria !== '0' && order_by === '0' && search !== '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias WHERE 
+                    (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') AND id_categoria = ? ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                    WHERE (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') AND id_categoria = ?`, [id_categoria])
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria !== '0' && order_by !== '0' && search === '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias WHERE id_categoria = ? 
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                        WHERE id_categoria = ?`, [id_categoria])
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }else if (id_categoria !== '0' && order_by !== '0' && search !== '0'){
+            const sub_categorias = await pool.query (`SELECT * FROM sub_categorias WHERE 
+                    (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') AND id_categoria = ? ORDER BY ${order_by} ${order}
+                    LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_sub_categorias = await pool.query (`SELECT COUNT (id) FROM sub_categorias
+                    WHERE (categoria LIKE '%${search}%' OR sub_categoria categoria LIKE '%${search}%' OR
+                    descripcion categoria LIKE '%${search}%') AND id_categoria = ?`, [id_categoria])
+
+                return res.json ({
+                    total_sub_categorias: total_sub_categorias[0][`COUNT (id)`],
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    sub_categorias: sub_categorias,
+                    success: true
+                })
+            }
+        }
     } catch (error) {
         console.log (error)
         return res.json ({
@@ -109,8 +262,10 @@ router.get ('/api/delete/subcategoria/:id_subcategoria', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM sub_categorias WHERE id = ?', [id_subcategoria])
-        const sub_categorias = await pool.query ('SELECT * FROM sub_categorias ORDER BY sub_categoria ASC')
+        const sub_categorias = await pool.query ('SELECT * FROM sub_categorias ORDER BY sub_categoria ASC LIMIT 0,16')
+        const total_sub_categorias = await pool.query ('SELECT COUNT (id) FROM sub_categorias')
         return res.json ({
+            total_sub_categorias: total_sub_categorias,
             sub_categorias: sub_categorias,
             success: true
         })
