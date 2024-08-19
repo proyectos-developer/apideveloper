@@ -511,11 +511,11 @@ router.get ('/api/delete/producto/:id_producto', async (req, res) => {
 router.get ('/api/producto/categorias/unidades/servicios', async (req, res) => {
     try {
         const categorias = await pool.query ('SELECT * FROM categorias ORDER BY categoria ASC')
-        const sub_categorias = await pool.query ('SELECT * FROM sub_categorias ORDER BY sub_categoria ASC')
+        const servicios = await pool.query ('SELECT * FROM servicios ORDER BY servicio ASC')
         const unidades = await pool.query ('SELECT * FROM unidades ORDER BY unidad ASC')
         return res.json ({
             categorias: categorias,
-            sub_categoria: sub_categorias,
+            servicios: servicios,
             unidades: unidades,
             success: true
         })
@@ -524,7 +524,7 @@ router.get ('/api/producto/categorias/unidades/servicios', async (req, res) => {
         return res.json ({
             error: error,
             categorias: [],
-            sub_categoria: [],
+            servicios: [],
             unidades: [],
             success: false
         })
