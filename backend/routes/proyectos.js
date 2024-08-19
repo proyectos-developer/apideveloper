@@ -181,13 +181,13 @@ router.post ('/api/proyecto', async (req, res) => {
     try {
         const newProyecto = {id_tipo_proyecto, tipo_proyecto, nombre_proyecto, cliente, descripcion, url_imagen, url_contenido}
 
-        await pool.query ('INSERT INTO proyectos set ?', [newProyecto])
-        const proyectos = await pool.query('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC')
+        const new_proyecto = await pool.query ('INSERT INTO proyectos set ?', [newProyecto])
+        const proyectos = await pool.query('SELECT * FROM proyectos WHERE id = ?', [new_proyecto.insertId])
         const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
         const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
 
         return res.json ({
-            proyectos: proyectos,
+            proyecto: proyectos[0],
             tipo_proyectos: tipo_proyectos,
             negocios: negocios,
             success: true
@@ -195,7 +195,7 @@ router.post ('/api/proyecto', async (req, res) => {
     } catch (error) {
         console.log (error)
         return res.json ({
-            proyectos: [],
+            proyecto: {},
             tipo_proyectos: [],
             negocios: [],
             success: false
@@ -212,10 +212,10 @@ router.post ('/api/proyecto/:id_proyecto', async (req, res) => {
         const updateProyecto = {id_tipo_proyecto, tipo_proyecto, nombre_proyecto, cliente, descripcion, url_imagen, url_contenido}
 
         await pool.query ('UPDATE proyectos set ? WHERE id = ?', [updateProyecto, id_proyecto])
-        const proyectos = await pool.query('SELECT * FROM proyectos ORDER BY id ASC')
+        const proyectos = await pool.query('SELECT * FROM proyectos WHERE id = ?', [id_proyecto])
 
         return res.json ({
-            proyectos: proyectos,
+            proyecto: proyectos[0],
             success: true
         })
     } catch (error) {
@@ -228,36 +228,161 @@ router.post ('/api/proyecto/:id_proyecto', async (req, res) => {
     }
 }) 
 
-router.get ('/api/proyectos/search/:search/tipo/:id_tipo', async (req, res) => {
-    const {search, id_tipo} = req.params
+router.get ('/api/proyectos/search/:search/tipo/:id_tipo/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, id_tipo, order_by, order, begin, amount} = req.params
 
     try {
-        if (search === '0' && id_tipo === '0'){
-            const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY id ASC')
-            return res.json({
-                proyectos: proyectos,
-                success: true
-            })
-        }else if (search === '0' && id_tipo !== '0'){
-            const proyectos = await pool.query ('SELECT * FROM proyectos WHERE tipo_proyecto = ?', [id_tipo])
-            return res.json({
-                proyectos: proyectos,
-                success: true
-            })
-        }else if (search !== '0' && id_tipo === '0'){
-            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE tipo_proyecto LIKE '%${search}%' OR nombre_proyecto LIKE '%${search}%' OR
-                        descripcion LIKE '%${search}%'`)
-            return res.json({
-                proyectos: proyectos,
-                success: true
-            })
-        }else if (search !== '0' && id_tipo !== '0'){
-            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (tipo_proyecto LIKE '%${search}%' OR nombre_proyecto LIKE '%${search}%' OR
-                        descripcion LIKE '%${search}%') AND tipo_proyecto = ?`, [id_tipo])
-            return res.json({
-                proyectos: proyectos,
-                success: true
-            })
+        if (order_by === '0' && search === '0' && id_tipo === '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query ('SELECT COUNT (id) FROM proyectos')
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0' && id_tipo === '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (nombre_proyecto LIKE '%${search}%'
+                    OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY created_at ASC
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE (nombre_proyecto LIKE '%${search}%'
+                    OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search === '0' && id_tipo !== '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE id_tipo_proyecto = ? 
+                    ORDER BY created_at ASC LIMIT ${begin},${amount}`, [id_tipo])
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE 
+                    id_tipo_proyecto = ?`, [id_tipo])
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0' && id_tipo !== '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (nombre_proyecto 
+                    LIKE '%${search}%' OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE 
+                    '%${search}%') AND id_tipo_proyecto = ? ORDER BY created_at ASC 
+                    LIMIT ${begin},${amount}`, [id_tipo])
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE 
+                    (nombre_proyecto LIKE '%${search}%' OR tipo_proyecto LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%') AND id_tipo_proyecto = ?`, [id_tipo])
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }
+        else if (order_by !== '0' && search === '0' && id_tipo === '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos ORDER BY ${order_by} ${order}
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query ('SELECT COUNT (id) FROM proyectos')
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && search !== '0' && id_tipo === '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (nombre_proyecto LIKE '%${search}%'
+                    OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order}
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE (nombre_proyecto LIKE '%${search}%'
+                    OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && search === '0' && id_tipo !== '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE id_tipo_proyecto = ? 
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_tipo])
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE 
+                    id_tipo_proyecto = ?`, [id_tipo])
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && search !== '0' && id_tipo !== '0'){
+            const proyectos = await pool.query (`SELECT * FROM proyectos WHERE (nombre_proyecto 
+                    LIKE '%${search}%' OR tipo_proyecto LIKE '%${search}%' OR descripcion LIKE 
+                    '%${search}%') AND id_tipo_proyecto = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [id_tipo])
+            if (parseInt(begin) === 0){
+                const total_proyectos = await pool.query (`SELECT COUNT (id) FROM proyectos WHERE 
+                    (nombre_proyecto LIKE '%${search}%' OR tipo_proyecto LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%') AND id_tipo_proyecto = ?`, [id_tipo])
+    
+                return res.json ({
+                    total_proyectos: total_proyectos[0][`COUNT (id)`],
+                    proyectos: proyectos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    proyectos: proyectos,
+                    success: true
+                })
+            }
         }
     } catch (error) {
         console.log (error)
@@ -268,30 +393,7 @@ router.get ('/api/proyectos/search/:search/tipo/:id_tipo', async (req, res) => {
     }
 })
 
-router.get ('/api/proyectos/tipo_proyectos/clientes', async (req, res) => {
-    try {
-        const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC')
-        const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
-        const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
-
-        return res.json ({
-            proyectos: proyectos,
-            tipo_proyectos: tipo_proyectos,
-            negocios: negocios,
-            success: true
-        })
-    } catch (error) {
-        console.log (error)
-        return res.json ({
-            proyectos: [],
-            tipo_proyectos: [],
-            negocios: [],
-            success: false
-        })
-    }
-})
-
-router.get ('/api/tipo_proyectos/clientes', async (req, res) => {
+router.get ('/api/proyecto/tipo_proyectos/clientes', async (req, res) => {
     try {
         const tipo_proyectos = await pool.query ('SELECT * FROM tipo_proyecto ORDER BY nombre ASC')
         const negocios = await pool.query ('SELECT * FROM negocio_empresa ORDER BY nombre_negocio ASC')
@@ -332,7 +434,7 @@ router.get ('/api/delete/proyecto/:id_proyecto', async (req, res) => {
     const {id_proyecto} = req.params
     try {
         await pool.query ('DELETE FROM proyectos WHERE id = ?', [id_proyecto])
-        const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC')
+        const proyectos = await pool.query ('SELECT * FROM proyectos ORDER BY nombre_proyecto ASC LIMIT 0,16')
         return res.json({
             proyectos: proyectos,
             success: true
