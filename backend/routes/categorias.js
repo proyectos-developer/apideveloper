@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/categoria', async (req, res) => {
-    const {categoria, descripcion} = req.body
+    const {url_foto, categoria, descripcion} = req.body
 
     try {
-        const newCategoria = {categoria, descripcion}
+        const newCategoria = {url_foto, categoria, descripcion}
         const new_categoria = await pool.query ('INSERT INTO categorias set ?', newCategoria)
         const categorias = await pool.query ('SELECT * FROM categorias WHERE id = ?', [new_categoria.insertId])
 
@@ -27,11 +27,11 @@ router.post ('/api/categoria', async (req, res) => {
 })
 
 router.post ('/api/categoria/:id_categoria', async (req, res) => {
-    const {categoria, descripcion} = req.body
+    const {url_foto, categoria, descripcion} = req.body
     const {id_categoria} = req.params
 
     try {
-        const updateCategoria = {categoria, descripcion}
+        const updateCategoria = {url_foto, categoria, descripcion}
         await pool.query ('UPDATE categorias set ? WHERE id = ?', [updateCategoria, id_categoria])
         const categorias = await pool.query ('SELECT  * FROM categorias WHERE id = ?', [id_categoria])
 
