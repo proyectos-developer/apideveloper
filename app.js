@@ -8,11 +8,13 @@ const flash = require ('connect-flash')
 const session = require ('express-session')
 const mysqlstore = require('express-mysql-session')
 const passport = require('passport')
+const fileUpload = require ('express-fileupload')
 
 const { database } = require('./backend/keys.js')
 
 const app = express()
 app.use(cors())
+app.use(fileUpload())
 require ('./backend/lib/passport.js')
 
 /**Configuraciones */
@@ -57,6 +59,7 @@ app.use((req, res, next) => {
 app.use(require('./backend/routes/index.js'));
 app.use(require('./backend/routes/authentication.js'))
 
+app.use(require('./backend/routes/archivos.js'))
 app.use(require('./backend/routes/negocios.js'))
 app.use(require('./backend/routes/proyectos.js'))
 app.use(require('./backend/routes/categorias.js'))
