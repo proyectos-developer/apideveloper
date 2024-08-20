@@ -495,7 +495,7 @@ router.get ('/api/delete/producto/:id_producto', async (req, res) => {
         
         return res.json ({
             total_productos: total_productos,
-            producto: productos,
+            productos: productos,
             success: true
         })
     } catch (error) {
