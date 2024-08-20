@@ -10,24 +10,26 @@ router.post ('/api/upload/foto/:carpeta', (req, res) => {
     const {carpeta} = req.params
     const file = req.files.file
     if (fs.existsSync(`./${carpeta}`)){
-        console.log ('existe')
+        file.mv(`./${carpeta}/${file.name}`, err => {
+            if (err){ 
+                return res.json({
+                    error: err,
+                    success: false
+                })
+            }else{
+                return res.json ({
+                    message: true,
+                    success: true
+                })
+            }
+        })
     }
     else{
-        console.log ('no existe')
+        return res.json ({
+            error: 'no existe',
+            success: true
+        })
     }
-    file.mv(`./${carpeta}/${file.name}`, err => {
-        if (err){ 
-            return res.json({
-                error: err,
-                success: false
-            })
-        }else{
-            return res.json ({
-                message: true,
-                success: true
-            })
-        }
-    })
 })
 
 module.exports = router
