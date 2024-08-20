@@ -258,11 +258,11 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             const productos = await pool.query (`SELECT * FROM productos 
                 WHERE (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                ORDER BY producto ASC LIMIT ${begin},${amount}`)
+                ORDER BY producto ASC LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE
                     (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -279,11 +279,11 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             const productos = await pool.query (`SELECT * FROM productos WHERE 
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+                ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE
                     (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -304,7 +304,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
                 LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                ORDER BY producto ASC LIMIT ${begin},${amount}`)
+                ORDER BY producto ASC LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria 
                 LIKE '%${search}%' OR subcategoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR
@@ -312,7 +312,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
                 LIKE '%${search}%' OR caracteristica_5 LIKE '%${search}%' OR caracteristica_6 LIKE '%${search}%' OR caracteristica_7 LIKE '%${search}%' OR caracteristica_8
                 LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -333,7 +333,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND 
             (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-            ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria 
                 LIKE '%${search}%' OR subcategoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR
@@ -341,7 +341,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
                 LIKE '%${search}%' OR caracteristica_5 LIKE '%${search}%' OR caracteristica_6 LIKE '%${search}%' OR caracteristica_7 LIKE '%${search}%' OR caracteristica_8
                 LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -357,12 +357,12 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
         }else if (tipo !== '0' && minimo !== '0' && search === '0' && order_by === '0'){
             const productos = await pool.query (`SELECT * FROM productos WHERE (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) 
                     AND (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '}) ORDER BY producto ASC LIMIT ${begin},${amount}`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '}) ORDER BY producto ASC LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE 
                     (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) AND
                     (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -379,11 +379,11 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             const productos = await pool.query (`SELECT * FROM productos WHERE (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) AND 
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)})
                     AND (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -404,7 +404,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) AND
             (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                    ORDER BY producto ASC LIMIT ${begin},${amount}`)
+                    ORDER BY producto ASC LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria 
                 LIKE '%${search}%' OR subcategoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR
@@ -412,7 +412,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
                 LIKE '%${search}%' OR caracteristica_5 LIKE '%${search}%' OR caracteristica_6 LIKE '%${search}%' OR caracteristica_7 LIKE '%${search}%' OR caracteristica_8
                 LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)})
                 AND (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
@@ -433,7 +433,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
             LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) AND 
             (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
                     'id_subcategoria = ? ' : 'id_unidad = ? '})
-                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_tipo])
             if (parseInt(begin) === 0){
                 const total_productos = await pool.query (`SELECT COUNT (id) FROM productos WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria 
                 LIKE '%${search}%' OR subcategoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR
@@ -441,7 +441,7 @@ router.get ('/api/productos/search/:search/tipo/:tipo/:id_tipo/precio/:minimo/:m
                 LIKE '%${search}%' OR caracteristica_5 LIKE '%${search}%' OR caracteristica_6 LIKE '%${search}%' OR caracteristica_7 LIKE '%${search}%' OR caracteristica_8
                 LIKE '%${search}%' OR caracteristica_9 LIKE '%${search}%' OR caracteristica_10) AND (precio > ${parseDouble(minimo)} AND precio < ${parseDouble(maximo)}) AND
                 (${tipo === 'categoria' ? 'id_categoria = ? ' : tipo === 'sub_categoria' ?
-                    'id_subcategoria = ? ' : 'id_unidad = ? '})`)
+                    'id_subcategoria = ? ' : 'id_unidad = ? '})`, [id_tipo])
 
                 return res.json ({
                     total_productos: total_productos[0][`COUNT (id)`],
