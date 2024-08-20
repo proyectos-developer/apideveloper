@@ -25,9 +25,19 @@ router.post ('/api/upload/foto/:carpeta', (req, res) => {
         })
     }
     else{
-        return res.json ({
-            error: 'no existe',
-            success: true
+        fs.mkdirSync(`./${carpeta}`)
+        file.mv(`./${carpeta}/${file.name}`, err => {
+            if (err){ 
+                return res.json({
+                    error: err,
+                    success: false
+                })
+            }else{
+                return res.json ({
+                    message: true,
+                    success: true
+                })
+            }
         })
     }
 })
