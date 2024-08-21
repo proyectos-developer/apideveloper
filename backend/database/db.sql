@@ -263,7 +263,16 @@ CREATE TABLE productos_favorito(
     id INT(11) NOT NULL,
     id_producto INT(11) NOT NULL,
     producto VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
     usuario_cliente VARCHAR (100) NOT NULL,
+    id_categoria INT(11) NOT NULL,
+    categoria VARCHAR (100) NOT NULL,
+    id_sub_categoria INT(11) NOT NULL,
+    sub_categoria VARCHAR (100) NOT NULL,
+    id_unidad INT(11) NOT NULL,
+    unidad VARCHAR (100) NOT NULL,
+    id_servicio INT(11) NOT NULL,
+    servicio VARCHAR (100) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp
 );
 
