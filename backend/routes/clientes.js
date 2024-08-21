@@ -37,9 +37,11 @@ const handlebarOptions = {
 transporter.use('compile', hbs(handlebarOptions))
 
 router.post ('/api/cliente', async (req, res) => {
-    const {nombres, apellidos, correo, nro_telefono, usuario, tipo_documento, nro_documento, razon_social, nro_ruc} = req.body
+    const {url_foto, nombres, apellidos, correo, nro_telefono, fecha_nacimiento, sexo, usuario, direccion,
+            provincia, distrito, pais, latitud, longitud, habilitado} = req.body
     try {
-        const newCliente = {nombres, apellidos, correo, nro_telefono, usuario, tipo_documento, nro_documento, razon_social, nro_ruc}
+        const newCliente = {url_foto, nombres, apellidos, correo, nro_telefono, fecha_nacimiento, sexo, usuario, direccion,
+                provincia, distrito, pais, latitud, longitud, habilitado}
         const new_cliente = await pool.query (`INSERT INTO info_clientes set ?`, [newCliente])
         const cliente = await pool.query ('SELECT * FROM info_clientes WHERE id = ?', [new_cliente.insertId])
 
@@ -79,10 +81,12 @@ router.post ('/api/admin/cliente/:usuario', async (req, res) => {
 
 router.post ('/api/cliente/:usuario', async (req, res) => {
     const {usuario} = req.params
-    const {nombres, apellidos, tipo_documento, nro_documento, razon_social, nro_ruc} = req.body
+    const {url_foto, nombres, apellidos, correo, nro_telefono, fecha_nacimiento, sexo, direccion,
+        provincia, distrito, pais, latitud, longitud, habilitado} = req.body
 
     try {
-        const updateCliente = {nombres, apellidos, tipo_documento, nro_documento, razon_social, nro_ruc}
+        const updateCliente = {url_foto, nombres, apellidos, correo, nro_telefono, fecha_nacimiento, sexo, direccion,
+            provincia, distrito, pais, latitud, longitud, habilitado}
         await pool.query ('UPDATE info_clientes set ? WHERE usuario = ?', [updateCliente, usuario])
         const cliente = await pool.query ('SELECT * FROM info_clientes WHERE usuario = ?', [usuario])
         return res.json ({
@@ -99,11 +103,11 @@ router.post ('/api/cliente/:usuario', async (req, res) => {
     }
 })
 
-router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
-    const {search, begin, amount} = req.params
+router.get ('/api/clientes/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, order_by, order, begin, amount} = req.params
 
     try {
-        if (search === '0'){
+        if (order_by === '0' && search === '0'){
             const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY apellidos ASC LIMIT ${begin},${amount}`)
             if(parseInt(begin) === 0){
                 const total_clientes = await pool.query ('SELECT COUNT (id) FROM info_clientes')
@@ -119,14 +123,50 @@ router.get ('/api/clientes/search/:search/:begin/:amount', async (req, res) => {
                     success: true
                 })
             }
-        }else{
-            const clientes = await pool.query (`SELECT * FROM info_clientes WHERE nombres LIKE '%${search}%' 
+        }else if (order_by === '0' && search !== '0'){
+            const clientes = await pool.query (`SELECT * FROM info_clientes WHERE (nombres LIKE '%${search}%' 
                         OR apellidos LIKE '%${search}%' OR nro_telefono LIKE '%${search}%' OR 
-                        correo LIKE '%${search}%' ORDER BY apellidos ASC LIMIT ${begin},${amount}`)
+                        correo LIKE '%${search}%') ORDER BY apellidos ASC LIMIT ${begin},${amount}`)
             if(parseInt(begin) === 0){
-                const total_clientes = await pool.query (`SELECT COUNT (id) FROM info_clientes WHERE nombres 
+                const total_clientes = await pool.query (`SELECT COUNT (id) FROM info_clientes WHERE (nombres 
                         LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_telefono LIKE 
-                        '%${search}%' OR correo LIKE '%${search}%'`)
+                        '%${search}%' OR correo LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_clientes: total_clientes[0][`COUNT (id)`],
+                    clientes: clientes,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    clientes: clientes,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search === '0'){
+            const clientes = await pool.query (`SELECT * FROM info_clientes ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if(parseInt(begin) === 0){
+                const total_clientes = await pool.query ('SELECT COUNT (id) FROM info_clientes')
+
+                return res.json ({
+                    total_clientes: total_clientes[0][`COUNT (id)`],
+                    clientes: clientes,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    clientes: clientes,
+                    success: true
+                })
+            }
+        }else if (order_by === '0' && search !== '0'){
+            const clientes = await pool.query (`SELECT * FROM info_clientes WHERE (nombres LIKE '%${search}%' 
+                        OR apellidos LIKE '%${search}%' OR nro_telefono LIKE '%${search}%' OR 
+                        correo LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if(parseInt(begin) === 0){
+                const total_clientes = await pool.query (`SELECT COUNT (id) FROM info_clientes WHERE (nombres 
+                        LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_telefono LIKE 
+                        '%${search}%' OR correo LIKE '%${search}%')`)
 
                 return res.json ({
                     total_clientes: total_clientes[0][`COUNT (id)`],
