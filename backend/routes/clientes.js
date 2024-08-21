@@ -64,9 +64,9 @@ router.post ('/api/admin/cliente/:usuario', async (req, res) => {
     try {
         const updateCliente = {habilitado}
         await pool.query ('UPDATE info_clientes set ? WHERE usuario = ?', [updateCliente, usuario])
-        const cliente = await pool.query ('SELECT * FROM info_clientes WHERE usuario = ?', [usuario])
+        const clientes = await pool.query ('SELECT * FROM info_clientes WHERE usuario = ?', [usuario])
         return res.json ({
-            cliente: cliente[0],
+            clientes: clientes,
             success: true
         })
 
