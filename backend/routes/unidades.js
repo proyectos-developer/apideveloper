@@ -104,7 +104,7 @@ router.get ('/api/unidades/search/:search/order_by/:order_by/:order/:begin/:amou
                     success: true
                 })
             }
-        }else if (order_by === '0' && search !== '0'){
+        }else if (order_by !== '0' && search !== '0'){
             const unidades = await pool.query (`SELECT * FROM unidades WHERE (unidad LIKE '%${search}%' OR
                 descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){

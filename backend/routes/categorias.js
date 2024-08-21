@@ -104,7 +104,7 @@ router.get ('/api/categorias/search/:search/order_by/:order_by/:order/:begin/:am
                     success: true
                 })
             }
-        }else if (order_by === '0' && search !== '0'){
+        }else if (order_by !== '0' && search !== '0'){
             const categorias = await pool.query (`SELECT * FROM categorias WHERE (categoria LIKE '%${search}%' OR
                 descripcion LIKE '%${search}%') ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
