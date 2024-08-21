@@ -32,7 +32,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             const calificaciones = await pool.query (`SELECT * FROM productos_calificaciones GROUP BY id_producto
                     ORDER BY created_at ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones GROUP BY id_producto`)
+                const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones`)
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -49,7 +49,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             const calificaciones = await pool.query (`SELECT * FROM productos_calificaciones GROUP BY id_producto
                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones GROUP BY id_producto`)
+                const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones`)
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -70,7 +70,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             if (parseInt(begin) === 0){
                 const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
-                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) GROUP BY id_producto`, [id_tipo])
+                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})`, [id_tipo])
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -91,7 +91,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             if (parseInt(begin) === 0){
                 const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
-                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) GROUP BY id_producto`, [id_tipo])
+                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})`, [id_tipo])
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -113,7 +113,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             if (parseInt(begin) === 0){
                 const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones
                     WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' GROUP BY id_producto`)
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' GROUP`)
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -134,7 +134,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
             if (parseInt(begin) === 0){
                 const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones
                     WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`)
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`)
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -159,7 +159,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
                         tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) 
                         AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                        sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`, [id_tipo])
+                        sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`, [id_tipo])
 
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
@@ -184,7 +184,7 @@ router.get ('/api/calificaciones/search/:search/tipo/:tipo/:id_tipo/order_by/:or
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
                         tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})
                         AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`, [id_tipo])
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`, [id_tipo])
                 return res.json ({
                     total_calificaciones: total_calificaciones[0][`COUNT (id)`],
                     calificaciones: calificaciones,
@@ -314,7 +314,7 @@ router.get ('/api/delete/calificacion/:id_calificacion', async (req, res) => {
         await pool.query ('DELETE FROM productos_calificaciones WHERE id = ?', [id_calificacion])
         const calificaciones = await pool.query (`SELECT * FROM productos_calificaciones GROUP BY id_producto 
                 ORDER BY created_at ASC LIMIT 0,16`)
-        const total_calificaciones = await pool.query ('SELECT COUNT (id) FROM productos_calificaciones GROUP BY id_producto')
+        const total_calificaciones = await pool.query ('SELECT COUNT (id) FROM productos_calificaciones')
         
         return res.json ({
             total_calificaciones: total_calificaciones,

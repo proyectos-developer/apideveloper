@@ -32,7 +32,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             const favoritos = await pool.query (`SELECT * FROM productos_favorito GROUP BY id_producto
                     ORDER BY created_at ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito GROUP BY id_producto`)
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito`)
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -49,7 +49,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             const favoritos = await pool.query (`SELECT * FROM productos_favorito GROUP BY id_producto
                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
-                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito GROUP BY id_producto`)
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito`)
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -70,7 +70,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             if (parseInt(begin) === 0){
                 const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
-                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) GROUP BY id_producto`, [id_tipo])
+                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})`, [id_tipo])
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -91,7 +91,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             if (parseInt(begin) === 0){
                 const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
-                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) GROUP BY id_producto`, [id_tipo])
+                        tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})`, [id_tipo])
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -113,7 +113,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             if (parseInt(begin) === 0){
                 const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
                     WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' GROUP BY id_producto`)
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`)
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -134,7 +134,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
             if (parseInt(begin) === 0){
                 const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
                     WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`)
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`)
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -159,7 +159,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
                         tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'}) 
                         AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                        sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`, [id_tipo])
+                        sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`, [id_tipo])
 
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
@@ -184,7 +184,7 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
                         WHERE (${tipo === 'categoria' ? 'id_categoria = ?' : tipo === 'sub_categoria' ? 'id_sub_categoria = ?' :
                         tipo === 'unidad' ? 'id_unidad = ?' : 'id_servicio = ?'})
                         AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR
-                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%') GROUP BY id_producto`, [id_tipo])
+                    sub_cagegoria LIKE '%${search}%' OR unidad LIKE '%${search}%' OR servicio LIKE '%${search}%')`, [id_tipo])
                 return res.json ({
                     total_favoritos: total_favoritos[0][`COUNT (id)`],
                     favoritos: favoritos,
@@ -314,7 +314,7 @@ router.get ('/api/delete/favorito/:id_favorito', async (req, res) => {
         await pool.query ('DELETE FROM productos_favorito WHERE id = ?', [id_favorito])
         const favoritos = await pool.query (`SELECT * FROM productos_favorito GROUP BY id_producto 
                 ORDER BY created_at ASC LIMIT 0,16`)
-        const total_favoritos = await pool.query ('SELECT COUNT (id) FROM productos_favorito GROUP BY id_producto')
+        const total_favoritos = await pool.query ('SELECT COUNT (id) FROM productos_favorito')
         
         return res.json ({
             total_favoritos: total_favoritos,
