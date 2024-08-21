@@ -207,24 +207,96 @@ router.get ('/api/favoritos/search/:search/tipo/:tipo/:id_tipo/order_by/:order_b
     }
 })
 
-router.get ('/api/favorito/producto/clientes/:id_producto', async (req, res) => {
-    const {id_producto} = req.params
+router.get ('/api/favorito/producto/clientes/:id_producto/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {id_producto, search, order_by, order, begin, amount} = req.params
 
     try {
-        const favoritos = await pool.query (`SELECT * FROM productos_favorito WHERE id_producto = ? ORDER BY created_at ASC`, [id_producto])
-        if (parseInt(begin) === 0){
-            const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito WHERE id_producto = ?`, [id_producto])
+        if (search === '0' && order_by === '0'){
+            const favoritos = await pool.query (`SELECT * FROM productos_favorito WHERE id_producto = ? 
+                    ORDER BY created_at ASC LIMIT ${begin},${amount}`, [id_producto])
+            if (parseInt(begin) === 0){
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
+                     WHERE id_producto = ?`, [id_producto])
 
-            return res.json ({
-                total_favoritos: total_favoritos[0][`COUNT (id)`],
-                favoritos: favoritos,
-                success: true
-            })
-        }else{
-            return res.json ({
-                favoritos: favoritos,
-                success: true
-            })
+                return res.json ({
+                    total_favoritos: total_favoritos[0][`COUNT (id)`],
+                    favoritos: favoritos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    favoritos: favoritos,
+                    success: true
+                })
+            }
+        }else if (search === '0' && order_by !== '0'){
+            const favoritos = await pool.query (`SELECT * FROM productos_favorito WHERE id_producto = ? 
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_producto])
+            if (parseInt(begin) === 0){
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
+                     WHERE id_producto = ?`, [id_producto])
+
+                return res.json ({
+                    total_favoritos: total_favoritos[0][`COUNT (id)`],
+                    favoritos: favoritos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    favoritos: favoritos,
+                    success: true
+                })
+            }
+        }else if (search !== '0' && order_by === '0'){
+            const favoritos = await pool.query (`SELECT * FROM productos_favorito WHERE id_producto = ? 
+                    AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR
+                    categoria LIKE '%${search}%' OR sub_categoria LIKE '%${search}%' OR
+                    unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%')
+                    ORDER BY created_at ASC LIMIT ${begin},${amount}`, [id_producto])
+            if (parseInt(begin) === 0){
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
+                    WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR
+                    categoria LIKE '%${search}%' OR sub_categoria LIKE '%${search}%' OR
+                    unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%') AND id_producto = ?`, [id_producto])
+
+                return res.json ({
+                    total_favoritos: total_favoritos[0][`COUNT (id)`],
+                    favoritos: favoritos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    favoritos: favoritos,
+                    success: true
+                })
+            }
+        }else if (search !== '0' && order_by !== '0'){
+            const favoritos = await pool.query (`SELECT * FROM productos_favorito WHERE id_producto = ? 
+                    AND (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR
+                    categoria LIKE '%${search}%' OR sub_categoria LIKE '%${search}%' OR
+                    unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%')
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_producto])
+            if (parseInt(begin) === 0){
+                const total_favoritos = await pool.query (`SELECT COUNT (id) FROM productos_favorito
+                    WHERE (producto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR
+                    categoria LIKE '%${search}%' OR sub_categoria LIKE '%${search}%' OR
+                    unidad LIKE '%${search}%' OR servicio LIKE '%${search}%' OR 
+                    descripcion LIKE '%${search}%') AND id_producto = ?`, [id_producto])
+
+                return res.json ({
+                    total_favoritos: total_favoritos[0][`COUNT (id)`],
+                    favoritos: favoritos,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    favoritos: favoritos,
+                    success: true
+                })
+            }
         }
     } catch (error) {
         console.log (error)
