@@ -307,6 +307,26 @@ router.get ('/api/favorito/producto/clientes/:id_producto/search/:search/order_b
     }
 })
 
+router.get ('/api/favorito/compras/producto/:id_producto/:usuario', async (req, res) => {
+    const {id_producto, usuario} = req.params
+    
+    try {
+        const total_compras = await pool.query (`SELECT COUNT (id) FROM compras
+             WHERE id_producto = ? AND usuario = ?`, [id_producto, usuario])
+
+        return res.json ({
+            total_compras: total_compras[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json({
+            total_veces: 0,
+            success: false
+        })
+    }
+})
+
 router.get ('/api/delete/favorito/:id_favorito', async (req, res) => {
     const {id_favorito} = req.params
     
