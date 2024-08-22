@@ -7,13 +7,13 @@ const { isLoggedIn } = require('../lib/auth')
 router.post ('/api/compra', async (req, res) => {
     const {id_producto, usuario, cantidad, precio_unidad, precio_total, shop_id,
         producto, descripcion, url_foto, id_categoria, categoria, id_sub_categoria, sub_categoria,
-        id_unidad, unidad, id_servicio, servicio
+        id_unidad, unidad, id_servicio, servicio, fecha_compra
     } = req.body
 
     try {
         const newCompra = {id_producto, usuario, cantidad, precio_unidad, precio_total, shop_id,
             producto, descripcion, url_foto, id_categoria, categoria, id_sub_categoria, sub_categoria,
-            id_unidad, unidad, id_servicio, servicio
+            id_unidad, unidad, id_servicio, servicio, fecha_compra
         }
         const new_compra = await pool.query ('INSERT INTO compras set ?', [newCompra])
         const compras = await pool.query ('SELECT * FROM compras WHERE id = ?', [new_compra.insertId])
@@ -59,7 +59,7 @@ router.get ('/api/compras/search/:search/order_by/:order_by/:order/:begin/:amoun
     const {search, order_by, order, begin, amount} = req.params
     try {
         if (search === '0' && order_by === '0'){
-            const compras = await pool.query (`SELECT * FROM compras GROUP BY shop_id LIMIT ${begin},${amount}`)
+            const compras = await pool.query (`SELECT * FROM compras GROUP BY shop_id ORDER BY fecha_compra ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_compras = await pool.query ('SELECT COUNT (id) FROM compras')
     
@@ -94,7 +94,8 @@ router.get ('/api/compras/search/:search/order_by/:order_by/:order/:begin/:amoun
         }else if (search !== '0' && order_by === '0'){
             const compras = await pool.query (`SELECT * FROM compras WHERE (producto LIKE '%${search}%' OR
                 descripcion LIKE '%${search}%' OR categoria LIKE '%${search}%' OR sub_categoria
-                LIKE '%${search}%' OR unidad LIKE '%${search}%') GROUP BY shop_id LIMIT ${begin},${amount}`)
+                LIKE '%${search}%' OR unidad LIKE '%${search}%') GROUP BY shop_id ORDER BY fecha_compra ASC 
+                LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_compras = await pool.query (`SELECT COUNT (id) FROM compras 
                     WHERE (producto LIKE '%${search}%' OR
@@ -180,7 +181,10 @@ router.get ('/api/delete/producto/compra/:id_carrito/:shop_id', async (req, res)
     try {
         await pool.query ('DELETE FROM compras WHERE id = ?', [id_carrito])
         const compras = await pool.query ('SELECT * FROM compras WHERE shop_id = ?', [shop_id])
+        const total_compras = await pool.query ('SELECT COUNT (id) FROM compras WHERE shop_id = ?', [shop_id])
+
         return res.json ({
+            total_compras: total_compras[0][`COUNT (id)`],
             compras: compras,
             success: true
         })
