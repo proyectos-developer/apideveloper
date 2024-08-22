@@ -4,7 +4,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
-router.post ('/api/compras', async (req, res) => {
+router.post ('/api/compra', async (req, res) => {
     const {id_producto, usuario, cantidad, precio_unidad, precio_total, shop_id,
         producto, descripcion, url_foto, id_categoria, categoria, id_sub_categoria, sub_categoria,
         id_unidad, unidad, id_servicio, servicio
