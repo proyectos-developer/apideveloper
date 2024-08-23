@@ -307,6 +307,29 @@ router.get ('/api/calificaciones/producto/clientes/:id_producto/search/:search/o
     }
 })
 
+router.get ('/api/calificaciones/cliente/producto/:id_producto/:usuario', async (req, res) => {
+    const {id_producto, usuario} = req.params
+
+    try {
+        const calificacion = await pool.query (`SELECT SUM (calificacion_producto) FROM calificaciones
+             WHERE id_producto = ? AND usuario_cliente = ?`, [id_producto, usuario])
+        const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM compras
+             WHERE id_producto = ? AND usuario_cliente = ?`, [id_producto, usuario])
+
+        return res.json ({
+            calificacion: calificacion,
+            total_calificaciones: total_calificaciones[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json({
+            total_veces: 0,
+            success: false
+        })
+    }
+})
+
 router.get ('/api/delete/calificacion/:id_calificacion', async (req, res) => {
     const {id_calificacion} = req.params
     
