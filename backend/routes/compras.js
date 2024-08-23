@@ -146,6 +146,28 @@ router.get ('/api/compras/search/:search/order_by/:order_by/:order/:begin/:amoun
     }
 })
 
+router.get ('/api/productos/compra/cliente/resumen/:shop_id', async (req, res) => {
+    const {shop_id} = req.params
+    try {
+        const nro_productos = await pool.query ('SELECT COUNT (id) FROM compras WHERE shop_id = ?', [shop_id])
+        const total_compra = await pool.query ('SELECT SUM (precio_total) FROM compras WHERE shop_id = ?', [shop_id])
+
+        return res.json ({
+            total_compra: total_compra[0][`SUM (precio_total)`],
+            nro_productos: nro_productos[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            nro_productos: 0,
+            total_compra: 0,
+            success: false
+        })
+    }
+})
+
 router.get ('/api/compras/productos/:shop_id/:begin/:amount', async (req, res) => {
     const {shop_id, begin, amount} = req.params
 
