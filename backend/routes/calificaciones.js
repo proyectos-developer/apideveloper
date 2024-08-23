@@ -311,19 +311,20 @@ router.get ('/api/calificaciones/cliente/producto/:id_producto/:usuario', async 
     const {id_producto, usuario} = req.params
 
     try {
-        const calificacion = await pool.query (`SELECT SUM (calificacion_producto) FROM calificaciones
+        const calificacion = await pool.query (`SELECT SUM(calificacion_producto) FROM productos_calificaciones
              WHERE id_producto = ? AND usuario_cliente = ?`, [id_producto, usuario])
-        const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM compras
+        const total_calificaciones = await pool.query (`SELECT COUNT (id) FROM productos_calificaciones
              WHERE id_producto = ? AND usuario_cliente = ?`, [id_producto, usuario])
 
         return res.json ({
-            calificacion: calificacion,
+            calificacion: calificacion[0][`SUM(calificacion_producto)`],
             total_calificaciones: total_calificaciones[0][`COUNT (id)`],
             success: true
         })
     } catch (error) {
         console.log (error)
         return res.json({
+            error: error,
             total_veces: 0,
             success: false
         })
