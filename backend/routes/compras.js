@@ -179,7 +179,7 @@ router.get ('/api/compras/cliente/:usuario', async (req, res) => {
     const {usuario} = req.params
 
     try {
-        const compras = await pool.query ('SELECT * FROM compras WHERE usuario = ? GROUP BY shop_id ORDER BY fecha_compra ASC')
+        const compras = await pool.query ('SELECT * FROM compras WHERE usuario = ? GROUP BY shop_id ORDER BY fecha_compra ASC', [usuario])
         return res.json ({
             compras: compras,
             total_compras: compras.length,
