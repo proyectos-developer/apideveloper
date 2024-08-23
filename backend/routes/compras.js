@@ -175,6 +175,25 @@ router.get ('/api/compras/productos/:shop_id/:begin/:amount', async (req, res) =
     }
 })
 
+router.get ('/api/compras/cliente/:usuario', async (req, res) => {
+    const {usuario} = req.params
+
+    try {
+        const compras = await pool.query ('SELECT * FROM compras WHERE usuario = ? GROUP BY shop_id ORDER BY fecha_compra ASC')
+        return res.json ({
+            compras: compras,
+            total_compras: compras.length,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            success: false
+        })
+    }
+})
+
 router.get ('/api/delete/producto/compra/:id_carrito/:shop_id', async (req, res) => {
     const {id_carrito, shop_id} = req.params
 
