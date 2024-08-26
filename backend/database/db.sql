@@ -395,7 +395,16 @@ CREATE TABLE noticias(
     fecha VARCHAR (100) NOT NULL,
     usuario VARCHAR (100) NOT NULL,
     titulo VARCHAR (200) NOT NULL,
-    noticia TEXT NOT NULL,
+    noticia_parrafo_1 TEXT NOT NULL,
+    noticia_parrafo_2 TEXT NOT NULL,
+    noticia_parrafo_3 TEXT NOT NULL,
+    noticia_parrafo_4 TEXT NOT NULL,
+    noticia_parrafo_5 TEXT NOT NULL,
+    noticia_parrafo_6 TEXT NOT NULL,
+    noticia_parrafo_7 TEXT NOT NULL,
+    noticia_parrafo_8 TEXT NOT NULL,
+    noticia_parrafo_9 TEXT NOT NULL,
+    noticia_parrafo_10 TEXT NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 

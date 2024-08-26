@@ -72,6 +72,7 @@ app.use(require('./backend/routes/calificaciones.js'))
 app.use(require('./backend/routes/clientes.js'))
 app.use(require('./backend/routes/compras.js'))
 app.use(require('./backend/routes/suscripciones.js'))
+app.use(require('./backend/routes/noticias.js'))
 
 app.use(require('./backend/routes/correo.js'))
 app.use(require('./backend/routes/cotizacion.js'))
