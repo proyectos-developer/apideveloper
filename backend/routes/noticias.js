@@ -78,11 +78,11 @@ router.post ('/api/noticia/habilitar/:id_noticia', async (req, res) => {
     }
 })
 
-router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:begin/:amount', async (req, res) => {
-    const {fecha, id_categoria, search, begin, amount} = req.params
+router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {fecha, id_categoria, search, order_by, order, begin, amount} = req.params
     try {
-        if (fecha === '0' && id_categoria === '0' && search === '0'){
-            const noticias = await pool.query (`SELECT * FROM noticias LIMIT ${begin},${amount}`)
+        if (order_by === '0' && fecha === '0' && id_categoria === '0' && search === '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias ORDER BY fecha ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query ('SELECT COUNT (id) FROM noticias')
 
@@ -97,9 +97,10 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha === '0' && id_categoria === '0' && search !== '0'){
+        }else if (order_by === '0' && fecha === '0' && id_categoria === '0' && search !== '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE titulo LIKE '%${search}%'
-                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%' LIMIT ${begin},${amount}`)
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%' 
+                    ORDER BY fecha ASC LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
                     WHERE titulo LIKE '%${search}%'
@@ -115,9 +116,9 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha === '0' && id_categoria !== '0' && search === '0'){
+        }else if (order_by === '0' && fecha === '0' && id_categoria !== '0' && search === '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE id_categoria_noticia = ? 
-                    LIMIT ${begin},${amount}`, [id_categoria])
+                    ORDER BY fecha ASC LIMIT ${begin},${amount}`, [id_categoria])
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
                         WHERE id_categoria_noticia = ?`, [id_categoria])
@@ -133,10 +134,10 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha === '0' && id_categoria !== '0' && search !== '0'){
+        }else if (order_by === '0' && fecha === '0' && id_categoria !== '0' && search !== '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
                     OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
-                    AND id_categoria_noticia = ? LIMIT ${begin},${amount}`, [id_categoria])
+                    AND id_categoria_noticia = ? ORDER BY fecha ASC LIMIT ${begin},${amount}`, [id_categoria])
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
                     WHERE (titulo LIKE '%${search}%'
@@ -154,7 +155,7 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                 })
             }
         }
-        else if (fecha !== '0' && id_categoria === '0' && search === '0'){
+        else if (order_by === '0' && fecha !== '0' && id_categoria === '0' && search === '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE fecha = ? LIMIT ${begin},${amount}`, [fecha])
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query ('SELECT COUNT (id) FROM noticias WHERE fecha = ?', [fecha])
@@ -170,7 +171,7 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha !== '0' && id_categoria === '0' && search !== '0'){
+        }else if (order_by === '0' && fecha !== '0' && id_categoria === '0' && search !== '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
                     OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
                     AND fecha = ? LIMIT ${begin},${amount}`, [fecha])
@@ -190,7 +191,7 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha !== '0' && id_categoria !== '0' && search === '0'){
+        }else if (order_by === '0' && fecha !== '0' && id_categoria !== '0' && search === '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE id_categoria_noticia = ? 
                     AND fecha = ?
                     LIMIT ${begin},${amount}`, [id_categoria, fecha])
@@ -209,10 +210,162 @@ router.get ('/api/noticias/categoria/:id_categoria/fecha/:fecha/search/:search/:
                     success: true
                 })
             }
-        }else if (fecha !== '0' && id_categoria !== '0' && search !== '0'){
+        }else if (order_by === '0' && fecha !== '0' && id_categoria !== '0' && search !== '0'){
             const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
                     OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
                     AND id_categoria_noticia = ? AND fecha = ? LIMIT ${begin},${amount}`, [id_categoria, fecha])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                    WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    AND id_categoria_noticia = ? AND fecha = ?`, [id_categoria, fecha])
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }
+        else if (order_by !== '0' && fecha === '0' && id_categoria === '0' && search === '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query ('SELECT COUNT (id) FROM noticias')
+
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha === '0' && id_categoria === '0' && search !== '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias (WHERE titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                    WHERE titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%'`)
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha === '0' && id_categoria !== '0' && search === '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE id_categoria_noticia = ? 
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                        WHERE id_categoria_noticia = ?`, [id_categoria])
+
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha === '0' && id_categoria !== '0' && search !== '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    AND id_categoria_noticia = ? ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_categoria])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                    WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    AND id_categoria_noticia = ?`, [id_categoria])
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }
+        else if (order_by !== '0' && fecha !== '0' && id_categoria === '0' && search === '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE fecha = ? 
+                ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query ('SELECT COUNT (id) FROM noticias WHERE fecha = ?', [fecha])
+
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha !== '0' && id_categoria === '0' && search !== '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    AND fecha = ? ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                    WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%') AND
+                    fecha = ?`, [fecha])
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha !== '0' && id_categoria !== '0' && search === '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE id_categoria_noticia = ? 
+                    AND fecha = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [id_categoria, fecha])
+            if (parseInt(begin) === 0){
+                const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
+                        WHERE id_categoria_noticia = ? AND fecha = ?`, [id_categoria, fecha])
+
+                return res.json ({
+                    total_noticias: total_noticias[0][`COUNT (id)`],
+                    noticias: noticias,
+                    success: true
+                })
+            }else{
+                return res.json ({
+                    noticias: noticias,
+                    success: true
+                })
+            }
+        }else if (order_by !== '0' && fecha !== '0' && id_categoria !== '0' && search !== '0'){
+            const noticias = await pool.query (`SELECT * FROM noticias WHERE (titulo LIKE '%${search}%'
+                    OR categoria_noticia LIKE '%${search}%' OR noticia LIKE '%${search}%')
+                    AND id_categoria_noticia = ? AND fecha = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [id_categoria, fecha])
             if (parseInt(begin) === 0){
                 const total_noticias = await pool.query (`SELECT COUNT (id) FROM noticias 
                     WHERE (titulo LIKE '%${search}%'
