@@ -31,7 +31,7 @@ router.get ('/api/suscripciones/:begin/:amount', async (req, res) => {
     try {
         const suscripciones = await pool.query (`SELECT * FROM suscripciones ORDER BY created_at ASC LIMIT ${begin},${amount}`)
         if (parseInt(begin) === 0){
-            const total_suscripciones = await pool.query ('SELECT COUNT (id) FROM suscripciones ORDER BY created_at ASC')
+            const total_suscripciones = await pool.query ('SELECT COUNT (id) FROM suscripciones')
 
             return res.json ({
                 total_suscripciones: total_suscripciones[0][`COUNT (id)`],
