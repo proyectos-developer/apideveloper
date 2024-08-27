@@ -11,7 +11,7 @@ router.post ('/api/categoria_noticia', async (req, res) => {
     try {
         const newCategoria = {categoria_noticia, descripcion}
         const new_categoria = await pool.query ('INSERT INTO categorias_noticias set ?', [newCategoria])
-        const categoria = await pool.query ('SELECT * FROM categorias_noticas WHERE id = ?', [new_categoria.insertId])
+        const categoria = await pool.query ('SELECT * FROM categorias_noticias WHERE id = ?', [new_categoria.insertId])
 
         return res.json ({
             categoria_noticia: categoria[0],
@@ -35,7 +35,7 @@ router.post ('/api/categoria_noticia/:id_categoria', async (req, res) => {
     try {
         const updateCategoria = {categoria_noticia, descripcion}
         await pool.query ('UPDATE categorias_noticias set ? WHERE id = ?', [updateCategoria, id_categoria])
-        const categoria = await pool.query ('SELECT * FROM categorias_noticas WHERE id = ?', [id_categoria])
+        const categoria = await pool.query ('SELECT * FROM categorias_noticias WHERE id = ?', [id_categoria])
 
         return res.json ({
             categoria_noticia: categoria[0],
@@ -52,13 +52,13 @@ router.post ('/api/categoria_noticia/:id_categoria', async (req, res) => {
     }
 })
 
-router.post ('/api/categorias_noticias/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+router.get ('/api/categorias_noticias/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, order_by, order, begin, amount} = req.params
 
     try {
         if (search === '0' && order_by === '0'){
             const categorias_noticias = await pool.query (`SELECT * FROM categorias_noticias ORDER BY created_at ASC 
-                    LIMIT ${begin} ${amount}`)
+                    LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const tota_categorias_noticias = await pool.query ('SELECT COUNT (id) FROM categorias_noticias')
 
@@ -75,7 +75,7 @@ router.post ('/api/categorias_noticias/search/:search/order_by/:order_by/:order/
             }
         }else if (search === '0' && order_by !== '0'){
             const categorias_noticias = await pool.query (`SELECT * FROM categorias_noticias ORDER BY ${order_by} ${order}
-                    LIMIT ${begin} ${amount}`)
+                    LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const tota_categorias_noticias = await pool.query ('SELECT COUNT (id) FROM categorias_noticias')
 
@@ -93,7 +93,7 @@ router.post ('/api/categorias_noticias/search/:search/order_by/:order_by/:order/
         }else if (search !== '0' && order_by === '0'){
             const categorias_noticias = await pool.query (`SELECT * FROM categorias_noticias WHERE 
                     (categoria_noticia LIKE '%${search}%' OR descripcion LIKE '%${search}%') 
-                    ORDER BY created_at ASC  LIMIT ${begin} ${amount}`)
+                    ORDER BY created_at ASC  LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const tota_categorias_noticias = await pool.query (`SELECT COUNT (id) FROM categorias_noticias 
                     WHERE (categoria_noticia LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
@@ -112,7 +112,7 @@ router.post ('/api/categorias_noticias/search/:search/order_by/:order_by/:order/
         }else if (search !== '0' && order_by !== '0'){
             const categorias_noticias = await pool.query (`SELECT * FROM categorias_noticias WHERE 
                     (categoria_noticia LIKE '%${search}%' OR descripcion LIKE '%${search}%') 
-                    ORDER BY ${order_by} ${order} LIMIT ${begin} ${amount}`)
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const tota_categorias_noticias = await pool.query (`SELECT COUNT (id) FROM categorias_noticias 
                     WHERE (categoria_noticia LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
