@@ -49,13 +49,81 @@ router.post ('/api/area_empresa/:id_area_empresa', async (req, res) => {
     }
 })
 
-router.get ('/api/areas_empresa', async (req, res) => {
+router.get ('/api/areas_empresa/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, order_by, order, begin, amount} = req.params
+
     try {
-        const areas_empresa = await pool.query ('SELECT * FROM areas_empresa ORDER BY mombre_area ASC')
-        return res.json ({
-            areas_empresa: areas_empresa,
-            success: true
-        })
+        if (search === '0' && order_by === '0'){
+            const areas_empresa = await pool.query (`SELECT * FROM areas_empresa ORDER BY nombre_area ASC 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_areas_empresa = await pool.query ('SELECT COUNT (id) FROM areas_empresa')
+
+                return res.json ({
+                    total_areas_empresa: total_areas_empresa[0][`COUNT (id)`],
+                    areas_empresa: areas_empresa,
+                    success: true
+                })
+            }
+            return res.json ({
+                areas_empresa: areas_empresa,
+                success: true
+            })
+        }else if (search === '0' && order_by !== '0'){
+            const areas_empresa = await pool.query (`SELECT * FROM areas_empresa ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_areas_empresa = await pool.query ('SELECT COUNT (id) FROM areas_empresa')
+
+                return res.json ({
+                    total_areas_empresa: total_areas_empresa[0][`COUNT (id)`],
+                    areas_empresa: areas_empresa,
+                    success: true
+                })
+            }
+            return res.json ({
+                areas_empresa: areas_empresa,
+                success: true
+            })
+        }else if (search !== '0' && order_by === '0'){
+            const areas_empresa = await pool.query (`SELECT * FROM areas_empresa 
+                    WHERE (nombre_area LIKE '%${search}%' OR descripcion LIKE '%${search}%') 
+                    ORDER BY nombre_area ASC 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_areas_empresa = await pool.query (`SELECT COUNT (id) FROM areas_empresa
+                    WHERE (nombre_area LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_areas_empresa: total_areas_empresa[0][`COUNT (id)`],
+                    areas_empresa: areas_empresa,
+                    success: true
+                })
+            }
+            return res.json ({
+                areas_empresa: areas_empresa,
+                success: true
+            })
+        }else if (search !== '0' && order_by !== '0'){
+            const areas_empresa = await pool.query (`SELECT * FROM areas_empresa 
+                    WHERE (nombre_area LIKE '%${search}%' OR descripcion LIKE '%${search}%') 
+                    ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`)
+            if (parseInt(begin) === 0){
+                const total_areas_empresa = await pool.query (`SELECT COUNT (id) FROM areas_empresa
+                    WHERE (nombre_area LIKE '%${search}%' OR descripcion LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_areas_empresa: total_areas_empresa[0][`COUNT (id)`],
+                    areas_empresa: areas_empresa,
+                    success: true
+                })
+            }
+            return res.json ({
+                areas_empresa: areas_empresa,
+                success: true
+            })
+        }
     } catch (error) {
         console.log (error)
         return res.json ({
@@ -90,8 +158,12 @@ router.get ('/api/delete/area_empresa/:id_area_empresa', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM areas_empresa WHERE id = ?', [id_area_empresa])
-        const areas_empresa = await pool.query ('SELECT * FROM areas_empresa ORDER BY nombre_area ASC')
+        const areas_empresa = await pool.query (`SELECT * FROM areas_empresa 
+                ORDER BY nombre_area ASC  LIMIT 0,6`)
+        const total_areas_empresa = await pool.query (`SELECT COUNT (id) FROM areas_empresa`)
+
         return res.json ({
+            total_areas_empresa: total_areas_empresa[0][`COUNT (id)`],
             areas_empresa: areas_empresa,
             success: true
         })
