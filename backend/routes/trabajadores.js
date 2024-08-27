@@ -166,13 +166,13 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa === '0' && order_by === '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') ORDER BY apellidos ASC 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%')`)
 
                 return res.json ({
@@ -188,13 +188,13 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa === '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%')`)
 
                 return res.json ({
@@ -210,13 +210,13 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo === '0' && search !== '0' && id_area_empresa !== '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?
                       ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_area_empresa])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?`, [id_area_empresa])
 
                 return res.json ({
@@ -298,13 +298,13 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa === '0' && order_by === '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ? ORDER BY apellidos ASC 
                     LIMIT ${begin},${amount}`, [estado_trabajo])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?`, [estado_trabajo])
 
                 return res.json ({
@@ -320,13 +320,13 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa === '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?
                      ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [estado_trabajo])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND estado_trabajo = ?`, [estado_trabajo])
 
                 return res.json ({
@@ -342,14 +342,14 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
         }else if (estado_trabajo !== '0' && search !== '0' && id_area_empresa !== '0' && order_by !== '0'){
             const trabajadores = await pool.query (`SELECT * FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?
                      AND estado_trabajo = ?
                       ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [id_area_empresa, estado_trabajo])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM trabajadores 
                     WHERE (nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR nro_documento
-                     LIKE '%${search}%' OR tip_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
+                     LIKE '%${search}%' OR tipo_documento LIKE '%${search}%' OR area_empresa  LIKE '%${search}%' OR 
                      seguro LIKE '%${search}%' OR afp LIKE '%${search}%') AND id_area_empresa = ?
                      AND estado_trabajo = ?`, [id_area_empresa, estado_trabajo])
 
