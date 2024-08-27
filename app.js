@@ -73,12 +73,11 @@ app.use(require('./backend/routes/clientes.js'))
 app.use(require('./backend/routes/compras.js'))
 app.use(require('./backend/routes/suscripciones.js'))
 app.use(require('./backend/routes/noticias.js'))
+app.use(require('./backend/routes/trabajadores.js'))
 
 app.use(require('./backend/routes/correo.js'))
 app.use(require('./backend/routes/cotizacion.js'))
-app.use(require('./backend/routes/noticias.js'))
 app.use(require('./backend/routes/empresa.js'))
-app.use(require('./backend/routes/trabajadores.js'))
 app.use(require('./backend/routes/administradores.js'))
 
 app.use(express.static(path.resolve(__dirname, './backend/views')));

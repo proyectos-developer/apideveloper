@@ -8,8 +8,8 @@ router.post ('/api/trabajador', async (req, res) => {
     const {id_area_empresa, area_empresa, url_foto, nombres, apellidos, correo_personal, correo_empresa,
             nro_telefono, tipo_documento, nro_documento, fecha_nacimiento, pais, provincia, distrito,
             direccion, afp, seguro, banco, nro_cuenta_bancaria, nro_cuenta_interbancaria, estudios,
-            universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto,
-            cargo
+            universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, 
+            sueldo_neto, cargo
     } = req.body
 
     try {
@@ -19,8 +19,8 @@ router.post ('/api/trabajador', async (req, res) => {
                 universidad, colegio, titulo, estado_civil, hijos, estado_trabajo, fecha_inicio, sueldo_bruto, sueldo_neto,
                 cargo
         }
-        const nueva = await pool.query ('INSERT INTO trabajadores set ?', newTrabajador)
-        const trabajador = await pool.query ('SELECT * FROM trabajadores WHERE id = ?', [nueva.insertId])
+        const new_trabajador = await pool.query ('INSERT INTO trabajadores set ?', [newTrabajador])
+        const trabajador = await pool.query ('SELECT * FROM trabajadores WHERE id = ?', [new_trabajador.insertId])
 
         return res.json ({
             trabajador: trabajador[0],
@@ -246,8 +246,8 @@ router.get ('/api/trabajadores/search/:search/empresa/:id_area_empresa/estado/:e
                 success: true
             })
         }else if (estado_trabajo !== '0' && search === '0' && id_area_empresa === '0' && order_by !== '0'){
-            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE estado_trabajo = ? ORDER BY ${order_by} ${order} 
-                    LIMIT ${begin},${amount}`, [estado_trabajo])
+            const trabajadores = await pool.query (`SELECT * FROM trabajadores WHERE estado_trabajo = ? 
+                    ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [estado_trabajo])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query ('SELECT COUNT (id) FROM trabajadores WHERE estado_trabajo = ?', [estado_trabajo])
 
@@ -398,7 +398,7 @@ router.get ('/api/delete/trabajador/:id_trabajador', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM trabajadores WHERE id = ?', [id_trabajador])
-        const trabajadores = await pool.query ('SELECT * FROM trabajadores ORDER BY apellidos ASC')
+        const trabajadores = await pool.query ('SELECT * FROM trabajadores ORDER BY apellidos ASC LIMIT 0,16')
         return res.json ({
             trabajadores: trabajadores,
             success: true
