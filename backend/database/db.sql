@@ -1,3 +1,4 @@
+noticias
 CREATE DATABASE developer_ideas;
 
 USE developer_ideas;
@@ -387,6 +388,22 @@ ALTER TABLE compras
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE compras;
+
+/**Categorías noticias**/
+CREATE TABLE categorias_noticias(
+    id INT(11) NOT NULL,
+    categoria_noticia VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE categorias_noticias
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE categorias_noticias
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE categorias_noticias;
 
 /**noticias**/
 CREATE TABLE noticias(
