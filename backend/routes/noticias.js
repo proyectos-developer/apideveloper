@@ -228,7 +228,7 @@ router.post ('/api/noticia/:id_noticia', async (req, res) => {
         const noticias = await pool.query ('SELECT * FROM noticias WHERE id = ?', [id_noticia])
 
         return res.json ({
-            noticia: noticia[0],
+            noticia: noticias[0],
             success: true
         })
     } catch (error) {
