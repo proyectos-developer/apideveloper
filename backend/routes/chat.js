@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/mensaje', async (req, res) => {
-    const {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje} = req.body
+    const {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje, usuario_remitente, fecha_mensaje} = req.body
 
     try {
-        const newMensaje = {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje}
+        const newMensaje = {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje, usuario_remitente, fecha_mensaje}
         const new_notificacion = await pool.query ('INSERT INTO mensajes set ?', newMensaje)
         const chat = await pool.query ('SELECT * FROM mensajes WHERE id = ?', [new_notificacion.insertId])
 
@@ -27,11 +27,11 @@ router.post ('/api/mensaje', async (req, res) => {
 })
 
 router.post ('/api/mensaje/:id_mensaje', async (req, res) => {
-    const {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje} = req.body
+    const {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje, usuario_remitente, fecha_mensaje} = req.body
     const {id_mensaje} = req.params
 
     try {
-        const updateMensaje = {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje}
+        const updateMensaje = {url_foto, nombres, apellidos, usuario_mensaje, titulo, mensaje, usuario_remitente, fecha_mensaje}
         await pool.query ('UPDATE mensajes set ? WHERE id = ?',  [updateMensaje, id_mensaje])
         const chat = await pool.query ('SELECT  * FROM mensajes WHERE id = ?', [id_mensaje])
 
