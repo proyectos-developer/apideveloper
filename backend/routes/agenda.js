@@ -49,7 +49,7 @@ router.post ('/api/reunion/:id_reunion', async (req, res) => {
     }
 })
 
-router.get ('/api/agenda/search/:search/fecha/:fecha/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+router.get ('/api/reuniones/search/:search/fecha/:fecha/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, fecha, order_by, order, begin, amount} = req.params
 
     try {
