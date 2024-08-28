@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/notificacion', async (req, res) => {
-    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, id_tipo, titulo} = req.body
+    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
 
     try {
-        const newNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, id_tipo, titulo}
+        const newNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
         const new_notificacion = await pool.query ('INSERT INTO notificaciones set ?', [newNotificacion])
         const notificacion = await pool.query ('SELECT * FROM notificaciones WHERE id = ?', [new_notificacion.insertId])
 
@@ -27,11 +27,11 @@ router.post ('/api/notificacion', async (req, res) => {
 })
 
 router.post ('/api/notificacion/:id_notificacion', async (req, res) => {
-    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, id_tipo, titulo} = req.body
+    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
     const {id_notificacion} = req.params
 
     try {
-        const updateNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, id_tipo, titulo}
+        const updateNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
         await pool.query ('UPDATE notificaciones set ? WHERE id = ?', [updateNotificacion, id_notificacion])
         const notificacion = await pool.query ('SELECT  * FROM notificaciones WHERE id = ?', [id_notificacion])
 
