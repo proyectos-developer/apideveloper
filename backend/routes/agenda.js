@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/reunion', async (req, res) => {
-    const {titulo, descripcion, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion} = req.body
+    const {titulo, descripcion, modo, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion} = req.body
 
     try {
-        const newReunion = {titulo, descripcion, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion}
+        const newReunion = {titulo, descripcion, modo, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion}
         const new_reunion = await pool.query ('INSERT INTO agenda set ?', newReunion)
         const reunion = await pool.query ('SELECT * FROM agenda WHERE id = ?', [new_reunion.insertId])
 
@@ -27,11 +27,11 @@ router.post ('/api/reunion', async (req, res) => {
 })
 
 router.post ('/api/reunion/:id_reunion', async (req, res) => {
-    const {titulo, descripcion, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion} = req.body
+    const {titulo, descripcion, modo, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion} = req.body
     const {id_reunion} = req.params
 
     try {
-        const updateReunion = {titulo, descripcion, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion}
+        const updateReunion = {titulo, descripcion, modo, lugar, direccion, hora, id_organizador, nombres, apellidos, url_foto, participantes, fecha_reunion}
         await pool.query ('UPDATE agenda set ? WHERE id = ?', [updateReunion, id_reunion])
         const reunion = await pool.query ('SELECT  * FROM agenda WHERE id = ?', [id_reunion])
 
