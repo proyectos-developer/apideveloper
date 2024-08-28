@@ -510,3 +510,58 @@ ALTER TABLE administradores
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE administradores;
+
+/**Notificaciones**/
+CREATE TABLE notificaciones(
+    id INT(11) NOT NULL,
+    tipo_notificacion VARCHAR (100) NOT NULL,
+    id_tipo VARCHAR (500) NOT NULL,
+    titulo VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE notificaciones
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE notificaciones
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE notificaciones;
+
+/**Chat**/
+CREATE TABLE mensajes(
+    id INT(11) NOT NULL,
+    url_foto VARCHAR (500) NOT NULL,
+    usuario_mensaje VARCHAR (100) NOT NULL,
+    titulo VARCHAR (500) NOT NULL,
+    mensaje VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE mensajes
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE mensajes
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE mensajes;
+
+/**Agenda**/
+CREATE TABLE agenda(
+    id INT(11) NOT NULL,
+    titulo VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    lugar VARCHAR (100) NOT NULL,
+    direccion VARCHAR (100) NOT NULL,
+    id_organizador VARCHAR (100) NOT NULL,
+    participantes VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE agenda
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE agenda
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE agenda;

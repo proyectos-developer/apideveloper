@@ -9,7 +9,7 @@ router.post ('/api/area_empresa', async (req, res) => {
 
     try {
         const newAreaEmpresa = {nombre_area, descripcion}
-        const nueva = await pool.query ('INSERT INTO areas_empresa set ?', newAreaEmpresa)
+        const nueva = await pool.query ('INSERT INTO areas_empresa set ?', [newAreaEmpresa])
         const area_empresa = await pool.query ('SELECT * FROM areas_empresa WHERE id = ?', [nueva.insertId])
 
         return res.json ({
@@ -159,7 +159,7 @@ router.get ('/api/delete/area_empresa/:id_area_empresa', async (req, res) => {
     try {
         await pool.query ('DELETE FROM areas_empresa WHERE id = ?', [id_area_empresa])
         const areas_empresa = await pool.query (`SELECT * FROM areas_empresa 
-                ORDER BY nombre_area ASC  LIMIT 0,6`)
+                ORDER BY nombre_area ASC  LIMIT 0,16`)
         const total_areas_empresa = await pool.query (`SELECT COUNT (id) FROM areas_empresa`)
 
         return res.json ({
