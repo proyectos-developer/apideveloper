@@ -252,4 +252,27 @@ router.get ('/api/delete/notificacion/:id_notificacion', async (req, res) => {
     }
 })
 
+router.get ('/api/nro/notificaciones/reuniones/mensajes', async (req, res) => {
+    try {
+        const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones')
+        const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda')
+        const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes')
+
+        return res.json ({
+            total_notificaciones: total_notificaciones[0][`COUNT (id)`],
+            total_reuniones: total_reuniones[0][`COUNT (id)`],
+            total_mensajes: total_mensajes[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            nro_notificaciones: 0,
+            nro_mensajes: 0,
+            nro_reuniones: 0,
+            success: false
+        })
+    }
+})
+
 module.exports = router
