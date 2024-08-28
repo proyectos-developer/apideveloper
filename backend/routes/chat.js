@@ -49,11 +49,11 @@ router.post ('/api/mensaje/:id_mensaje', async (req, res) => {
     }
 })
 
-router.get ('/api/mensajes/search/:search/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
-    const {search, order_by, order, begin, amount} = req.params
+router.get ('/api/mensajes/search/:search/fecha/:fecha/:order_by/:order_by/:order/:begin/:amount', async (req, res) => {
+    const {search, fecha, order_by, order, begin, amount} = req.params
 
     try {
-        if (search === '0' && order_by === '0'){
+        if (fecha === '0' && search === '0' && order_by === '0'){
             const mensajes = await pool.query (`SELECT * FROM mensajes ORDER BY created_at DESC
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -69,7 +69,7 @@ router.get ('/api/mensajes/search/:search/order_by/:order_by/:order/:begin/:amou
                 mensajes: mensajes,
                 success: true
             })
-        }else if (search === '0' && order_by !== '0'){
+        }else if (fecha === '0' && search === '0' && order_by !== '0'){
             const mensajes = await pool.query (`SELECT * FROM mensajes ORDER BY ${order_by} ${order} 
                     LIMIT ${begin},${amount}`)
             if (parseInt(begin) === 0){
@@ -85,7 +85,7 @@ router.get ('/api/mensajes/search/:search/order_by/:order_by/:order/:begin/:amou
                 mensajes: mensajes,
                 success: true
             })
-        }else if (search !== '0' && order_by === '0'){
+        }else if (fecha === '0' && search !== '0' && order_by === '0'){
             const mensajes = await pool.query (`SELECT * FROM mensajes 
                     WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%') 
                     ORDER BY created_at DESC 
@@ -104,7 +104,7 @@ router.get ('/api/mensajes/search/:search/order_by/:order_by/:order/:begin/:amou
                 mensajes: mensajes,
                 success: true
             })
-        }else if (search !== '0' && order_by !== '0'){
+        }else if (fecha === '0' && search !== '0' && order_by !== '0'){
             const mensajes = await pool.query (`SELECT * FROM mensajes 
                     WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%')
                     ORDER BY ${order_by} ${order} 
@@ -112,6 +112,80 @@ router.get ('/api/mensajes/search/:search/order_by/:order_by/:order/:begin/:amou
             if (parseInt(begin) === 0){
                 const total_mensajes = await pool.query (`SELECT COUNT (id) FROM mensajes
                     WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%')`)
+
+                return res.json ({
+                    total_mensajes: total_mensajes[0][`COUNT (id)`],
+                    mensajes: mensajes,
+                    success: true
+                })
+            }
+            return res.json ({
+                mensajes: mensajes,
+                success: true
+            })
+        }
+        else if (fecha !== '0' && search === '0' && order_by === '0'){
+            const mensajes = await pool.query (`SELECT * FROM mensajes WHERE fecha_mensaje = ? ORDER BY created_at DESC
+                    LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes WHERE fecha_mensaje = ?', [fecha])
+
+                return res.json ({
+                    total_mensajes: total_mensajes[0][`COUNT (id)`],
+                    mensajes: mensajes,
+                    success: true
+                })
+            }
+            return res.json ({
+                mensajes: mensajes,
+                success: true
+            })
+        }else if (fecha !== '0' && search === '0' && order_by !== '0'){
+            const mensajes = await pool.query (`SELECT * FROM mensajes WHERE fecha_mensaje = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes WHERE fecha_mensaje = ? ', [fecha])
+
+                return res.json ({
+                    total_mensajes: total_mensajes[0][`COUNT (id)`],
+                    mensajes: mensajes,
+                    success: true
+                })
+            }
+            return res.json ({
+                mensajes: mensajes,
+                success: true
+            })
+        }else if (fecha !== '0' && search !== '0' && order_by === '0'){
+            const mensajes = await pool.query (`SELECT * FROM mensajes 
+                    WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%') 
+                    AND fecha_mensaje = ?
+                    ORDER BY created_at DESC 
+                    LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_mensajes = await pool.query (`SELECT COUNT (id) FROM mensajes
+                    WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%')
+                    AND fecha_mensaje = ?`, [fecha])
+
+                return res.json ({
+                    total_mensajes: total_mensajes[0][`COUNT (id)`],
+                    mensajes: mensajes,
+                    success: true
+                })
+            }
+            return res.json ({
+                mensajes: mensajes,
+                success: true
+            })
+        }else if (fecha !== '0' && search !== '0' && order_by !== '0'){
+            const mensajes = await pool.query (`SELECT * FROM mensajes 
+                    WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%')
+                    AND fecha_mensaje = ? ORDER BY ${order_by} ${order} 
+                    LIMIT ${begin},${amount}`, [fecha])
+            if (parseInt(begin) === 0){
+                const total_mensajes = await pool.query (`SELECT COUNT (id) FROM mensajes
+                    WHERE (titulo LIKE '%${search}%' OR nombres LIKE '%${search}%' OR apellidos LIKE '%${search}%' OR mensaje LIKE '%${search}%')
+                    AND fecha_mensaje = ?`, [fecha])
 
                 return res.json ({
                     total_mensajes: total_mensajes[0][`COUNT (id)`],
