@@ -5,10 +5,10 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth')
 
 router.post ('/api/notificacion', async (req, res) => {
-    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
+    const {id_tipo_notificacion, leido, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
 
     try {
-        const newNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
+        const newNotificacion = {id_tipo_notificacion, leido, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
         const new_notificacion = await pool.query ('INSERT INTO notificaciones set ?', [newNotificacion])
         const notificacion = await pool.query ('SELECT * FROM notificaciones WHERE id = ?', [new_notificacion.insertId])
 
@@ -27,11 +27,11 @@ router.post ('/api/notificacion', async (req, res) => {
 })
 
 router.post ('/api/notificacion/:id_notificacion', async (req, res) => {
-    const {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
+    const {id_tipo_notificacion, leido, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo} = req.body
     const {id_notificacion} = req.params
 
     try {
-        const updateNotificacion = {id_tipo_notificacion, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
+        const updateNotificacion = {id_tipo_notificacion, leido, tipo_notificacion, usuario, nombres, apellidos, url_foto, titulo}
         await pool.query ('UPDATE notificaciones set ? WHERE id = ?', [updateNotificacion, id_notificacion])
         const notificacion = await pool.query ('SELECT  * FROM notificaciones WHERE id = ?', [id_notificacion])
 
@@ -45,6 +45,37 @@ router.post ('/api/notificacion/:id_notificacion', async (req, res) => {
             error: error,
             success: false,
             notificacion: {}
+        })
+    }
+})
+
+router.post ('/api/lectura/notificacion/:id_notificacion/:begin/:amount', async (req, res) => {
+    const {id_notificacion, begin, amount} = req.params
+    const {leido} = req.body
+
+    try {
+        const updateNotificacion = {leido}
+        await pool.query ('UPDATE notificaciones set ? WHERE id = ?', [updateNotificacion, id_notificacion])
+        const notificaciones = await pool.query ('SELECT * FROM notificaciones ORDER BY created_at DESC LIMIT 0,5')
+        if (parseInt(begin) === 0){
+            const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones')
+
+            return res.json ({
+                total_notificaciones: total_notificaciones[0][`COUNT (id)`],
+                notificaciones: notificaciones,
+                success: true
+            })
+        }
+        return res.json ({
+            notificaciones: notificaciones,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json({
+            error: error,
+            leido: false,
+            success: false
         })
     }
 })
