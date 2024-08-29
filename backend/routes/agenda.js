@@ -55,10 +55,10 @@ router.post ('/api/lectura/reunion/:id_reunion/:begin/:amount', async (req, res)
 
     try {
         const updateReunion = {leido}
-        await pool.query ('UPDATE reuniones set ? WHERE id = ?', [updateReunion, id_reunion])
-        const reuniones = await pool.query (`SELECT * FROM reuniones ORDER BY created_at DESC LIMIT ${begin},${amount}`)
+        await pool.query ('UPDATE agenda set ? WHERE id = ?', [updateReunion, id_reunion])
+        const reuniones = await pool.query (`SELECT * FROM agenda ORDER BY created_at DESC LIMIT ${begin},${amount}`)
         if (parseInt(begin) === 0){
-            const total_reuniones = await pool.query ('SELECT COUNT (id) FROM reuniones')
+            const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda')
 
             return res.json ({
                 total_reuniones: total_reuniones[0][`COUNT (id)`],
