@@ -287,4 +287,21 @@ router.get ('/api/delete/reunion/:id_reunion', async (req, res) => {
     }
 })
 
+router.get ('/api/nro/reuniones', async (req, res) => {
+    try {
+        const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda WHERE leido = 0')
+
+        return res.json ({
+            total_reuniones: total_reuniones[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            nro_reuniones: 0,
+            success: false
+        })
+    }
+})
+
 module.exports = router

@@ -282,4 +282,21 @@ router.get ('/api/delete/mensaje/:id_mensaje', async (req, res) => {
     }
 })
 
+router.get ('/api/nro/mensajes', async (req, res) => {
+    try {
+        const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes WHERE leido = 0')
+
+        return res.json ({
+            total_mensajes: total_mensajes[0][`COUNT (id)`],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            nro_mensajes: 0,
+            success: false
+        })
+    }
+})
+
 module.exports = router
