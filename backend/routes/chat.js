@@ -284,10 +284,10 @@ router.get ('/api/delete/mensaje/:id_mensaje', async (req, res) => {
 
 router.get ('/api/nro/mensajes', async (req, res) => {
     try {
-        const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes WHERE leido = 0')
+        const total_mensajes = await pool.query ('SELECT * FROM mensajes WHERE leido = 0')
 
         return res.json ({
-            total_mensajes: total_mensajes[0][`COUNT (id)`],
+            total_mensajes: total_mensajes,
             success: true
         })
     } catch (error) {

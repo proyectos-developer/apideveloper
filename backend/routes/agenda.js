@@ -289,10 +289,10 @@ router.get ('/api/delete/reunion/:id_reunion', async (req, res) => {
 
 router.get ('/api/nro/reuniones', async (req, res) => {
     try {
-        const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda WHERE leido = 0')
+        const total_reuniones = await pool.query ('SELECT * FROM agenda WHERE leido = 0')
 
         return res.json ({
-            total_reuniones: total_reuniones[0][`COUNT (id)`],
+            total_reuniones: total_reuniones,
             success: true
         })
     } catch (error) {
