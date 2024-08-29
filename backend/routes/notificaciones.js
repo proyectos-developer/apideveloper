@@ -56,7 +56,7 @@ router.post ('/api/lectura/notificacion/:id_notificacion/:begin/:amount', async 
     try {
         const updateNotificacion = {leido}
         await pool.query ('UPDATE notificaciones set ? WHERE id = ?', [updateNotificacion, id_notificacion])
-        const notificaciones = await pool.query ('SELECT * FROM notificaciones ORDER BY created_at DESC LIMIT 0,5')
+        const notificaciones = await pool.query (`SELECT * FROM notificaciones ORDER BY created_at DESC LIMIT ${begin},${amount}`)
         if (parseInt(begin) === 0){
             const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones')
 
@@ -285,7 +285,7 @@ router.get ('/api/delete/notificacion/:id_notificacion', async (req, res) => {
 
 router.get ('/api/nro/notificaciones/reuniones/mensajes', async (req, res) => {
     try {
-        const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones')
+        const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones WHERE leido = 0')
         const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda')
         const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes')
 
