@@ -74,12 +74,11 @@ router.post ('/api/lectura/mensaje/:id_mensaje/:begin/:amount', async (req, res)
         console.log (error)
         return res.json({
             error: error,
-            leido: false,
+            mensajes: [],
             success: false
         })
     }
 })
-
 
 router.get ('/api/mensajes/search/:search/fecha/:fecha/:order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, fecha, order_by, order, begin, amount} = req.params

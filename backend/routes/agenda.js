@@ -49,6 +49,37 @@ router.post ('/api/reunion/:id_reunion', async (req, res) => {
     }
 })
 
+router.post ('/api/lectura/reunion/:id_reunion/:begin/:amount', async (req, res) => {
+    const {id_reunion, begin, amount} = req.params
+    const {leido} = req.body
+
+    try {
+        const updateReunion = {leido}
+        await pool.query ('UPDATE reuniones set ? WHERE id = ?', [updateReunion, id_reunion])
+        const reuniones = await pool.query (`SELECT * FROM reuniones ORDER BY created_at DESC LIMIT ${begin},${amount}`)
+        if (parseInt(begin) === 0){
+            const total_reuniones = await pool.query ('SELECT COUNT (id) FROM reuniones')
+
+            return res.json ({
+                total_reuniones: total_reuniones[0][`COUNT (id)`],
+                reuniones: reuniones,
+                success: true
+            })
+        }
+        return res.json ({
+            reuniones: reuniones,
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json({
+            error: error,
+            reuniones: [],
+            success: false
+        })
+    }
+})
+
 router.get ('/api/reuniones/search/:search/fecha/:fecha/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, fecha, order_by, order, begin, amount} = req.params
 

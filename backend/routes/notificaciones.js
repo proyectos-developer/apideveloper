@@ -74,7 +74,7 @@ router.post ('/api/lectura/notificacion/:id_notificacion/:begin/:amount', async 
         console.log (error)
         return res.json({
             error: error,
-            leido: false,
+            notificaciones: [false],
             success: false
         })
     }
@@ -286,8 +286,8 @@ router.get ('/api/delete/notificacion/:id_notificacion', async (req, res) => {
 router.get ('/api/nro/notificaciones/reuniones/mensajes', async (req, res) => {
     try {
         const total_notificaciones = await pool.query ('SELECT COUNT (id) FROM notificaciones WHERE leido = 0')
-        const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda')
-        const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes')
+        const total_reuniones = await pool.query ('SELECT COUNT (id) FROM agenda WHERE leido = 0')
+        const total_mensajes = await pool.query ('SELECT COUNT (id) FROM mensajes WHERE leido = 0')
 
         return res.json ({
             total_notificaciones: total_notificaciones[0][`COUNT (id)`],
