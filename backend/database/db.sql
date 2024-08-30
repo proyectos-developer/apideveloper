@@ -1,4 +1,4 @@
-noticias
+
 CREATE DATABASE developer_ideas;
 
 USE developer_ideas;
@@ -565,3 +565,140 @@ ALTER TABLE agenda
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 DESCRIBE agenda;
+
+
+/**Gestión de Proyectos **/
+/**Información**/
+CREATE TABLE informacion_proyecto(
+    id INT(11) NOT NULL,
+    nombre_proyecto VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (500) NOT NULL,
+    fecha_inicio VARCHAR (10) NOT NULL,
+    fecha_finalizacion VARCHAR (10) NOT NULL,
+    estado_proyecto VARCHAR (100) NOT NULL,
+    prioridad INT (11) NOT NULL,
+    presupuesto_proyecto DOUBLE NOT NULL,
+    cliente VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE informacion_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE informacion_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE informacion_proyecto;
+
+/**Equipo**/
+CREATE TABLE equipo_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    id_trabajador INT (11) NOT NULL,
+    rol_asignado VARCHAR (100) NOT NULL,
+    id_tarea VARCHAR (100) NOT NULL,
+    disponibilidad VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE equipo_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE equipo_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE equipo_proyecto;
+
+/**Tareas actividades**/
+CREATE TABLE tareas_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    tarea VARCHAR (100) NOT NULL,
+    descripcion VARCHAR (100) NOT NULL,
+    fecha_inicio VARCHAR (10) NOT NULL,
+    fecha_finalizacion VARCHAR (10) NOT NULL,
+    estado VARCHAR (100) NOT NULL,
+    dependencias VARCHAR (100) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE tareas_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE tareas_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE tareas_proyecto;
+
+/**Documentos archivos**/
+CREATE TABLE documentos_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    descripcion VARCHAR (100) NOT NULL,
+    carpeta VARCHAR (100) NOT NULL,
+    versiones VARCHAR (100) NOT NULL,
+    archivo VARCHAR (10) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE documentos_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE documentos_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE documentos_proyecto;
+
+/**Comunicación**/
+CREATE TABLE comunicacion_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    tipo_comunicacion VARCHAR (100) NOT NULL,
+    usuario_comunica VARCHAR (100) NOT NULL,
+    usuarios_receptores VARCHAR (1000) NOT NULL,
+    notas VARCHAR (500) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE comunicacion_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE comunicacion_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE comunicacion_proyecto;
+
+/**Riesgos**/
+CREATE TABLE riesgos_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    riesgo VARCHAR (1000) NOT NULL,
+    mitigacion VARCHAR (1000) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE riesgos_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE riesgos_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE riesgos_proyecto;
+
+/**kpis proyecto**/
+CREATE TABLE kpis_proyecto(
+    id INT(11) NOT NULL,
+    id_proyecto INT (11) NOT NULL,
+    id_tarea INT (11) NOT NULL,
+    porcentaje_tarea_completada DOUBLE NOT NULL,
+    desviacion_presupuesto DOUBLE NOT NULL,
+    created_at timestamp NOT NULL DEFAULT current_timestamp 
+);
+
+ALTER TABLE kpis_proyecto
+    ADD PRIMARY KEY(id);
+
+ALTER TABLE kpis_proyecto
+    MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+
+DESCRIBE kpis_proyecto;
