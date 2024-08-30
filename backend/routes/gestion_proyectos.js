@@ -324,7 +324,7 @@ router.post ('/api/gestion/kpis/proyecto/:id', async (req, res) => {
 /**Obtener proyectos informacion, equipo, actividades, documentos, comunicaciones, riesgos, kpis */
 router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/columna/:columna/:valor/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, columna, valor, order_by, order, begin, amount, fecha} = req.params
-    const fecha_reemplazada = fecha.replace('-', '/')
+    const fecha_reemplazada = fecha.replace('-', '/').replace('-', '/')
     try {
         if (search === '0' && columna === '0' && fecha === '0' && order_by === '0'){
             const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto ORDER BY created_at ASC
@@ -361,11 +361,11 @@ router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search === '0' && columna === '0' && fecha !== '0' && order_by === '0'){
-            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_incio = ? OR
+            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) ORDER BY created_at ASC LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM informacion_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_proyectos: total_proyectos[0][`COUNT (id)`],
@@ -379,11 +379,11 @@ router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search === '0' && columna === '0' && fecha !== '0' && order_by !== '0'){
-            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_incio = ? OR
+            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM informacion_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_proyectos: total_proyectos[0][`COUNT (id)`],
@@ -524,14 +524,14 @@ router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search !== '0' && columna === '0' && fecha !== '0' && order_by === '0'){
-            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_incio = ? OR
+            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) AND 
                     (nombre_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado_proyecto LIKE '%${search}%' OR presupuesto LIKE '%${search}%')
                     ORDER BY created_at ASC LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM informacion_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?) AND
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?) AND
                     (nombre_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado_proyecto LIKE '%${search}%' OR presupuesto LIKE '%${search}%')`, [fecha_reemplazada, fecha_reemplazada])
 
@@ -547,14 +547,14 @@ router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search !== '0' && columna === '0' && fecha !== '0' && order_by !== '0'){
-            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_incio = ? OR
+            const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) AND 
                     (nombre_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado_proyecto LIKE '%${search}%' OR presupuesto LIKE '%${search}%')
                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM informacion_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?) AND
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?) AND
                     (nombre_proyecto LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado_proyecto LIKE '%${search}%' OR presupuesto LIKE '%${search}%')`, [fecha_reemplazada, fecha_reemplazada])
 
@@ -807,11 +807,11 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search === '0' && columna === '0' && fecha !== '0' && order_by === '0'){
-            const tareas_proyecto = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_incio = ? OR
+            const tareas_proyecto = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) ORDER BY created_at ASC LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM tareas_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_proyectos: total_proyectos[0][`COUNT (id)`],
@@ -825,11 +825,11 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search === '0' && columna === '0' && fecha !== '0' && order_by !== '0'){
-            const tareas_proyecto = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_incio = ? OR
+            const tareas_proyecto = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM tareas_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?)`, [fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_proyectos: total_proyectos[0][`COUNT (id)`],
@@ -968,14 +968,14 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search !== '0' && columna === '0' && fecha !== '0' && order_by === '0'){
-            const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_incio = ? OR
+            const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) AND 
                     (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                     ORDER BY created_at ASC LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM tareas_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?) AND
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?) AND
                     (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [fecha_reemplazada, fecha_reemplazada])
 
@@ -991,14 +991,14 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
                 })
             }
         }else if (search !== '0' && columna === '0' && fecha !== '0' && order_by !== '0'){
-            const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_incio = ? OR
+            const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto WHERE (fecha_inicio = ? OR
                     fecha_finalizacion = ?) AND 
                     (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                     ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_proyectos = await pool.query (`SELECT COUNT (id) FROM tareas_proyecto
-                    (WHERE fecha_incio = ? OR fecha_finalizacion = ?) AND
+                    (WHERE fecha_inicio = ? OR fecha_finalizacion = ?) AND
                     (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [fecha_reemplazada, fecha_reemplazada])
 
