@@ -324,7 +324,7 @@ router.post ('/api/gestion/kpis/proyecto/:id', async (req, res) => {
 /**Obtener proyectos informacion, equipo, actividades, documentos, comunicaciones, riesgos, kpis */
 router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/columna/:columna/:valor/order_by/:order_by/:order/:begin/:amount', async (req, res) => {
     const {search, columna, valor, order_by, order, begin, amount, fecha} = req.params
-    const fecha_reemplazada = fecha.replace('/', ('-'))
+    const fecha_reemplazada = fecha.replace('-', '/')
     try {
         if (search === '0' && columna === '0' && fecha === '0' && order_by === '0'){
             const informacion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto ORDER BY created_at ASC
