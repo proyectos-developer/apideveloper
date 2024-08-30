@@ -675,6 +675,7 @@ router.get ('/api/gestion/informacion/proyecto/search/:search/fecha/:fecha/colum
     } catch (error) {
         console.log (error)
         return res.json ({
+            error: error,
             informacion_proyectos: [],
             success: false
         })
