@@ -1700,20 +1700,20 @@ router.get ('/api/gestion/delete/proyecto/:id', async (req, res) => {
 
     try {
         await pool.query ('DELETE FROM informacion_proyecto WHERE id = ?', [id])
-        const gestion_proyecto = await pool.query (`SELECT * FROM informacion_proyecto ORDER BY created_at ASC
+        const gestion_proyectos = await pool.query (`SELECT * FROM informacion_proyecto ORDER BY created_at ASC
             LIMIT 0, 16`)
-        const total_informacion = await pool.query ('SELECT COUNT (id) FROM informacion_proyecto')
+        const total_proyectos = await pool.query ('SELECT COUNT (id) FROM informacion_proyecto')
 
         return res.json ({
-            total_informacion: total_informacion[0][`COUNT (id)`],
-            gestion_proyecto: gestion_proyecto,
+            total_proyectos: total_proyectos[0][`COUNT (id)`],
+            gestion_proyectos: gestion_proyectos,
             success: true
         })
     } catch (error) {
         console.log (error)
         return res.json ({
             error: error,
-            gestion_proyecto: [],
+            gestion_proyectos: [],
             success: false
         })
     }
