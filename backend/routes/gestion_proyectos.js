@@ -846,11 +846,13 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
             }
         }else if (search === '0' && columna !== '0' && fecha === '0' && order_by === '0'){
             const tareas_proyecto = await pool.query (`SELECT * FROM tareas_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) ORDER BY created_at ASC
+                    WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : 
+                        columna === 'dependencias' ? 'dependencias = ?' : ''}) ORDER BY created_at ASC
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''})`, [valor])
+                    WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : 
+                        columna === 'dependencias' ? 'dependencias = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_tareas: total_tareas[0][`COUNT (id)`],
@@ -866,12 +868,12 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search === '0' && columna !== '0' && fecha === '0' && order_by !== '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) ORDER BY ${order_by} ${order}
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''})`, [valor])
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_tareas: total_tareas[0][`COUNT (id)`],
@@ -887,12 +889,12 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search === '0' && columna !== '0' && fecha !== '0' && order_by === '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
                         ORDER BY created_at ASC LIMIT ${begin},${amount}`, [valor, fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)`, [valor, fecha_reemplazada, fecha_reemplazada])
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)`, [valor, fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_tareas: total_tareas[0][`COUNT (id)`],
@@ -908,12 +910,12 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search === '0' && columna !== '0' && fecha !== '0' && order_by !== '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
                         ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [valor, fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)`, [valor, fecha_reemplazada, fecha_reemplazada])
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)`, [valor, fecha_reemplazada, fecha_reemplazada])
 
                 return res.json ({
                     total_tareas: total_tareas[0][`COUNT (id)`],
@@ -1018,7 +1020,7 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search !== '0' && columna !== '0' && fecha === '0' && order_by === '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                     ORDER BY created_at ASC
@@ -1026,7 +1028,7 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [valor])
 
@@ -1044,7 +1046,7 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search !== '0' && columna !== '0' && fecha === '0' && order_by !== '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND 
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND 
                         (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                     ORDER BY ${order_by} ${order}
@@ -1052,7 +1054,7 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [valor])
 
@@ -1070,14 +1072,14 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search !== '0' && columna !== '0' && fecha !== '0' && order_by === '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
                         AND (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                         ORDER BY created_at ASC LIMIT ${begin},${amount}`, [valor, fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?)
                         AND (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [valor, fecha_reemplazada, fecha_reemplazada])
 
@@ -1095,14 +1097,14 @@ router.get ('/api/gestion/actividades/proyecto/search/:search/fecha/:fecha/colum
         }else if (search !== '0' && columna !== '0' && fecha !== '0' && order_by !== '0'){
             const tareas_proyectos = await pool.query (`SELECT * FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) 
                         AND (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')
                         ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [valor, fecha_reemplazada, fecha_reemplazada])
             if (parseInt(begin) === 0){
                 const total_tareas =  await pool.query (`SELECT COUNT (id) FROM tareas_proyecto 
                     WHERE (${columna === 'estado' ? 'estado = ?' : columna === 'dependencias' ?
-                        'dependencias = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) AND
+                        'dependencias = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND (fecha_inicio = ? OR fecha_finalizacion = ?) AND
                         (tarea LIKE '%${search}%' OR descripcion LIKE '%${search}%' OR 
                     estado LIKE '%${search}%' OR dependencias LIKE '%${search}%')`, [valor, fecha_reemplazada, fecha_reemplazada])
 
@@ -1255,11 +1257,11 @@ router.get ('/api/gestion/comunicaciones/proyecto/search/:search/columna/:column
             }
         }else if (search === '0' && columna !== '0' && order_by === '0'){
             const comunicaciones_proyecto = await pool.query (`SELECT * FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) ORDER BY created_at ASC
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) ORDER BY created_at ASC
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_comunicaciones = await pool.query (`SELECT COUNT (id) FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''})`, [valor])
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_comunicaciones: total_comunicaciones[0][`COUNT (id)`],
@@ -1274,11 +1276,11 @@ router.get ('/api/gestion/comunicaciones/proyecto/search/:search/columna/:column
             }
         }else if (search === '0' && columna !== '0' && order_by !== '0'){
             const comunicaciones_proyecto = await pool.query (`SELECT * comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) ORDER BY ${order_by} ${order}
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_comunicaciones = await pool.query (`SELECT COUNT (id) comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''})`, [valor])
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_comunicaciones: total_comunicaciones[0][`COUNT (id)`],
@@ -1332,13 +1334,13 @@ router.get ('/api/gestion/comunicaciones/proyecto/search/:search/columna/:column
             }
         }else if (search !== '0' && columna !== '0' && order_by === '0'){
             const comunicaciones_proyecto = await pool.query (`SELECT * FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) AND
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tipo_comunicacion LIKE '%${search}%' OR notas LIKE '%${search}%')
                     ORDER BY created_at ASC
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_comunicaciones = await pool.query (`SELECT COUNT (id) FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) AND
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tipo_comunicacion LIKE '%${search}%' OR notas LIKE '%${search}%')`, [valor])
 
                 return res.json ({
@@ -1354,13 +1356,13 @@ router.get ('/api/gestion/comunicaciones/proyecto/search/:search/columna/:column
             }
         }else if (search !== '0' && columna !== '0' && order_by !== '0'){
             const comunicaciones_proyecto = await pool.query (`SELECT * FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) AND 
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND 
                         (tipo_comunicacion LIKE '%${search}%' OR notas LIKE '%${search}%')
                     ORDER BY ${order_by} ${order}
                     LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_comunicaciones = await pool.query (`SELECT COUNT (id) FROM comunicacion_proyecto 
-                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : ''}) AND
+                    WHERE (${columna === 'tipo_comunicacion' ? 'tipo_comunicacion = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) AND
                         (tipo_comunicacion LIKE '%${search}%' OR notas LIKE '%${search}%')`, [valor])
 
                 return res.json ({
