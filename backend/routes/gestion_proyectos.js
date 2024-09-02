@@ -32,7 +32,7 @@ router.post ('/api/gestion/trabajador/proyecto', async (req, res) => {
 
     try {
         const newEquipoProyecto = {id_proyecto, id_trabajador, rol_asignado, id_tarea, disponibilidad}
-        await pool.query ('INSERT INTO equipo_proyecto set ?', [newEquipoProyecto])
+        const new_equipo_proyecto = await pool.query ('INSERT INTO equipo_proyecto set ?', [newEquipoProyecto])
         const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id = ?', [new_equipo_proyecto.insertId])
 
         return res.json ({
