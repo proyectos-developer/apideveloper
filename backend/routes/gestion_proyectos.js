@@ -72,10 +72,10 @@ router.post ('/api/gestion/actividad/proyecto', async (req, res) => {
 })
 
 router.post ('/api/gestion/documento/proyecto', async (req, res) => {
-    const {id_proyecto, descripcion, carpeta, versiones} = req.body
+    const {id_proyecto, descripcion, carpeta, versiones, archivo} = req.body
 
     try {
-        const newDocumentoProyecto = {id_proyecto, descripcion, carpeta, versiones}
+        const newDocumentoProyecto = {id_proyecto, descripcion, carpeta, versiones, archivo}
         const new_documento_proyecto = await pool.query ('INSERT INTO documentos_proyecto set ?', [newDocumentoProyecto])
         const documento_proyecto = await pool.query ('SELECT * FROM documentos_proyecto WHERE id = ?', [new_documento_proyecto.insertId])
 
@@ -231,10 +231,10 @@ router.post ('/api/gestion/actividad/proyecto/:id', async (req, res) => {
 
 router.post ('/api/gestion/documento/proyecto/:id', async (req, res) => {
     const {id} = req.params
-    const {id_proyecto, descripcion, carpeta, versiones} = req.body
+    const {id_proyecto, descripcion, carpeta, versiones, archivo} = req.body
 
     try {
-        const newDocumentoProyecto = {id_proyecto, descripcion, carpeta, versiones}
+        const newDocumentoProyecto = {id_proyecto, descripcion, carpeta, versiones, archivo}
         await pool.query ('UPDATE documentos_proyecto set ? WHERE id = ?', [newDocumentoProyecto, id])
         const documento_proyecto = await pool.query ('SELECT * FROM documentos_proyecto WHERE id = ?', [id])
 
