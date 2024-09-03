@@ -722,11 +722,11 @@ router.get ('/api/gestion/trabajadores/proyecto/columna/:columna/:valor/order_by
         }else if (columna !== '0' && order_by === '0'){
             const trabajadores_proyecto = await pool.query (`SELECT * FROM equipo_proyecto WHERE 
                 (${columna === 'rol_asignado' ? 'rol_asignado = ?' : columna === 'disponibilidad' ?
-                    'disponibilidad = ?' : ''}) ORDER BY created_at ASC LIMIT ${begin},${amount}`, [valor])
+                    'disponibilidad = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) ORDER BY created_at ASC LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM equipo_proyecto WHERE
                     (${columna === 'rol_asignado' ? 'rol_asignado = ?' : columna === 'disponibilidad' ?
-                    'disponibilidad = ?' : ''})`, [valor])
+                    'disponibilidad = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_trabajadores: total_trabajadores[0][`COUNT (id)`],
@@ -742,11 +742,11 @@ router.get ('/api/gestion/trabajadores/proyecto/columna/:columna/:valor/order_by
         }else if (columna !== '0' && order_by !== '0'){
             const trabajadores_proyecto = await pool.query (`SELECT * FROM equipo_proyecto WHERE 
                 (${columna === 'rol_asignado' ? 'rol_asignado = ?' : columna === 'disponibilidad' ?
-                    'disponibilidad = ?' : ''}) ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [valor])
+                    'disponibilidad = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''}) ORDER BY ${order_by} ${order} LIMIT ${begin},${amount}`, [valor])
             if (parseInt(begin) === 0){
                 const total_trabajadores = await pool.query (`SELECT COUNT (id) FROM equipo_proyecto WHERE
                     (${columna === 'rol_asignado' ? 'rol_asignado = ?' : columna === 'disponibilidad' ?
-                    'disponibilidad = ?' : ''})`, [valor])
+                    'disponibilidad = ?' : columna === 'proyecto' ? 'id_proyecto = ?' : ''})`, [valor])
 
                 return res.json ({
                     total_trabajadores: total_trabajadores[0][`COUNT (id)`],
