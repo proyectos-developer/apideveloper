@@ -183,14 +183,14 @@ router.post ('/api/gestion/informacion/proyecto/:id', async (req, res) => {
     }
 })
 
-router.post ('/api/gestion/trabajador/proyecto/:id', async (req, res) => {
-    const {id} = req.params
-    const {id_proyecto, id_trabajador, rol_asignado, id_tarea, disponibilidad} = req.body
+router.post ('/api/gestion/trabajador/proyecto/:id_proyecto/:id_trabajador', async (req, res) => {
+    const {id_trabajador, id_proyecto} = req.params
+    const {rol_asignado, id_tarea, disponibilidad} = req.body
 
     try {
-        const newEquipoProyecto = {id_proyecto, id_trabajador, rol_asignado, id_tarea, disponibilidad}
-        await pool.query ('UPDATE equipo_proyecto set ? WHERE id = ?', [newEquipoProyecto, id])
-        const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id = ?', [id])
+        const newEquipoProyecto = {rol_asignado, id_tarea, disponibilidad}
+        await pool.query ('UPDATE equipo_proyecto set ? WHERE id_trabajador = ? AND id_proyecto = ?', [newEquipoProyecto, id_trabajador, id_proyecto])
+        const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id_trabajador = ? AND id_proyecto = ?', [id_trabajador, id_proyecto])
 
         return res.json ({
             trabajador_proyecto: trabajador_proyecto[0],
@@ -1596,11 +1596,11 @@ router.get ('/api/gestion/trabajador/proyecto/:id', async (req, res) => {
     }
 })
 
-router.get ('/api/gestion/datos/trabajador/proyecto/:id_trabajador', async (req, res) => {
-    const {id_trabajador} = req.params
+router.get ('/api/gestion/datos/trabajador/proyecto/:id', async (req, res) => {
+    const {id} = req.params
 
     try {
-        const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id_trabajador = ?', [id_trabajador])
+        const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id = ?', [id])
 
         return res.json ({
             trabajador_proyecto: trabajador_proyecto [0],
