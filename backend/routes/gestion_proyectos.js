@@ -1596,6 +1596,26 @@ router.get ('/api/gestion/trabajador/proyecto/:id', async (req, res) => {
     }
 })
 
+router.get ('/api/gestion/datos/trabajador/proyecto/:id_trabajador', async (req, res) => {
+    const {id_trabajador} = req.params
+
+    try {
+        const trabajador_proyecto = await pool.query ('SELECT * FROM equipo_proyecto WHERE id_trabajador = ?', [id_trabajador])
+
+        return res.json ({
+            trabajador_proyecto: trabajador_proyecto [0],
+            success: true
+        })
+    } catch (error) {
+        console.log (error)
+        return res.json ({
+            error: error,
+            trabajador_proyecto: {},
+            success: false
+        })
+    }
+})
+
 router.get ('/api/gestion/actividad/proyecto/:id', async (req, res) => {
     const {id} = req.params
 
