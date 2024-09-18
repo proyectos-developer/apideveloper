@@ -1,8 +1,8 @@
 module.exports = {
     database: {
-        host: 'developer-ideas.com',
-        user: 'admin_developer_ideas', 
-        password: '?R82g10pd',
+        host: 'localhost',
+        user: 'root', 
+        password: '206@Dev2702ideas732',
         database: 'admin_developer_ideas' 
     },
     mailjet:{

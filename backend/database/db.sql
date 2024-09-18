@@ -1,4 +1,4 @@
-
+nombre_area
 CREATE DATABASE developer_ideas;
 
 USE developer_ideas;
@@ -434,27 +434,30 @@ ALTER TABLE noticias
 DESCRIBE noticias;
 
 /**Areas empresa**/
-CREATE TABLE areas_empresa(
+CREATE TABLE departamentos(
     id INT(11) NOT NULL,
-    nombre_area VARCHAR (100) NOT NULL,
+    departamento VARCHAR (100) NOT NULL,
     descripcion VARCHAR (500) NOT NULL,
+    jefe VARCHAR (100) NOT NULL,
+    id_jefe VARCHAR (100) NOT NULL,
+    equipo VARCHAR (1000) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );
 
-ALTER TABLE areas_empresa
+ALTER TABLE departamentos
     ADD PRIMARY KEY(id);
 
-ALTER TABLE areas_empresa
+ALTER TABLE departamentos
     MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
-DESCRIBE areas_empresa;
+DESCRIBE departamentos;
 
 /**Trabajador**/
 CREATE TABLE trabajadores(
     id INT(11) NOT NULL,
     url_foto VARCHAR (500) NOT NULL,
-    id_area_empresa INT (11) NOT NULL,
-    area_empresa VARCHAR (100) NOT NULL,
+    id_departamento INT (11) NOT NULL,
+    departamento VARCHAR (100) NOT NULL,
     nombres VARCHAR (100) NOT NULL,
     apellidos VARCHAR (100) NOT NULL,
     correo_personal VARCHAR (100) NOT NULL,
@@ -498,7 +501,7 @@ CREATE TABLE administradores(
     id_trabajador INT (11) NOT NULL,
     nombres VARCHAR (100) NOT NULL,
     apellidos VARCHAR (100) NOT NULL,
-    area_empresa VARCHAR (100) NOT NULL,
+    departamento VARCHAR (100) NOT NULL,
     habilitado TINYINT (1) NOT NULL,
     created_at timestamp NOT NULL DEFAULT current_timestamp 
 );

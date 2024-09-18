@@ -1,6 +1,7 @@
 const cors = require('cors')
 
 const express = require ('express');
+
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const path = require('path');
@@ -61,8 +62,8 @@ app.use(require('./backend/routes/authentication.js'))
 
 app.use(require('./backend/routes/archivos.js'))
 app.use(require('./backend/routes/negocios.js'))
-app.use(require('./backend/routes/proyectos.js'))
-app.use(require('./backend/routes/gestion_proyectos.js'))
+app.use(require('./backend/routes/proyectos.js')) 
+app.use(require('./backend/routes/gestion_proyectos.js')) 
 app.use(require('./backend/routes/categorias.js'))
 app.use(require('./backend/routes/subcategorias.js'))
 app.use(require('./backend/routes/unidades.js'))
@@ -72,10 +73,10 @@ app.use(require('./backend/routes/favoritos.js'))
 app.use(require('./backend/routes/calificaciones.js'))
 app.use(require('./backend/routes/clientes.js'))
 app.use(require('./backend/routes/compras.js'))
-app.use(require('./backend/routes/suscripciones.js'))
+app.use(require('./backend/routes/suscripciones.js')) 
 app.use(require('./backend/routes/noticias.js'))
-app.use(require('./backend/routes/empresa.js'))
-app.use(require('./backend/routes/trabajadores.js'))
+app.use(require('./backend/routes/departamentos.js'))
+app.use(require('./backend/routes/personal.js'))
 app.use(require('./backend/routes/agenda.js'))
 app.use(require('./backend/routes/notificaciones.js'))
 app.use(require('./backend/routes/chat.js'))
